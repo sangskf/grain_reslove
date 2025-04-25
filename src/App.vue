@@ -4,7 +4,6 @@ import DataTransmitter from './views/DataTransmitter.vue';
 
 <template>
   <main class="container">
-    <h1>粮情解析系统</h1>
     <DataTransmitter />
   </main>
 </template>
