@@ -20,14 +20,16 @@
     <!-- 发送数据面板 -->
     <div v-if="activeTab === 'send'">
       <div class="connection-panel">
-        <div class="form-group">
-          <label for="ip">IP地址:</label>
-          <input id="ip" v-model="ipAddress" type="text" placeholder="例如: 192.168.1.1" />
-        </div>
+        <div class="connection-row">
+          <div class="form-group ip-field">
+            <label for="ip">IP地址:</label>
+            <input id="ip" v-model="ipAddress" type="text" placeholder="例如: 192.168.1.1" />
+          </div>
 
-        <div class="form-group">
-          <label for="port">端口号:</label>
-          <input id="port" v-model="port" type="number" placeholder="例如: 8080" />
+          <div class="form-group port-field">
+            <label for="port">端口号:</label>
+            <input id="port" v-model="port" type="number" placeholder="例如: 8080" />
+          </div>
         </div>
       </div>
 
@@ -283,6 +285,19 @@ export default {
   padding: 15px;
   border-radius: 8px;
   background-color: #f8f8f8;
+}
+
+.connection-row {
+  display: flex;
+  gap: 20px;
+}
+
+.ip-field {
+  flex: 3;
+}
+
+.port-field {
+  flex: 1;
 }
 
 .form-group {
