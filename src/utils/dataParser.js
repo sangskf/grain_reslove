@@ -34,20 +34,33 @@ export function parseTemperatureData(hexArray) {
   const results = [];
   
   // 从索引13开始解析温度数据
-  for (let i = 13; i < hexArray.length - 1; i += 2) {
+  for (let i = 10; i < hexArray.length - 1; i += 2) {
     // 遇到FF FF表示数据结束
     if (hexArray[i] === 'ff' && hexArray[i+1] === 'ff') {
       break;
     }
     
     try {
-      // 解析两个字节的温度值
-      const highByte = parseInt(hexArray[i], 16);
-      const lowByte = parseInt(hexArray[i+1], 16);
+      // 解析两个字节的温度值 (注意: 修正了高低位处理)
+      const lowByte = parseInt(hexArray[i], 16);
+      const highByte = parseInt(hexArray[i+1], 16);
       
       if (!isNaN(highByte) && !isNaN(lowByte)) {
-        const tempRaw = (highByte * 256 + lowByte);
-        const temperature = tempRaw / 10.0;
+        // 使用位运算构建16位有符号整数
+        const tempRaw = (highByte << 8) | lowByte;
+        
+        // 判断符号位并正确计算温度值
+        let temperature;
+        if ((tempRaw & 0x8000) === 0) {
+          // 正温度: 直接乘以0.0625
+          temperature = tempRaw * 0.0625;
+        } else {
+          // 负温度: 需要进行二进制补码处理
+          temperature = -((0xFFFF - tempRaw + 1) * 0.0625);
+        }
+        
+        // 保留3位小数
+        temperature = parseFloat(temperature.toFixed(3));
         
         results.push({
           sensorId: Math.floor((i - 13) / 2) + 1,
