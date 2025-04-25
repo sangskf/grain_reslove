@@ -1,7 +1,130 @@
-# Tauri + Vue 3
+# 粮情解析系统
 
-This template should help get you started developing with Tauri + Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+粮情解析系统是一个基于Tauri + Vue 3开发的跨平台桌面应用，用于发送和解析粮情监测协议数据。该应用支持通过TCP发送自定义16进制数据，以及对接收到的数据进行解析和可视化展示。
 
-## Recommended IDE Setup
+## 功能特性
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+- **数据发送功能**：
+  - 向指定IP和端口发送自定义16进制数据
+  - 支持输入自定义16进制数据或使用默认数据
+  - 自动连接、发送数据并接收响应
+
+- **本地解析功能**：
+  - 直接输入16进制响应数据进行本地解析
+  - 提供示例数据快速测试
+  - 无需网络连接即可测试解析功能
+
+- **数据解析与展示**：
+  - 显示原始16进制数据
+  - 解析协议头部信息（包头、设备编号、数据长度等）
+  - 解析温度传感器数据并以表格形式展示
+
+## 技术栈
+
+- **前端**：Vue 3 + Vite
+  - 使用组件化设计
+  - 响应式UI
+  - 模块化代码结构
+
+- **后端**：Rust + Tauri 2.0
+  - 高性能网络通信
+  - 跨平台支持
+  - 安全的系统访问
+
+## 项目环境要求
+
+- **Node.js**: v20.18.0+
+- **Rust**: 1.86.0+
+- **Tauri**: 2.0+
+
+## 安装与运行
+
+### 环境准备
+
+确保您已安装：
+- [Node.js](https://nodejs.org/) (v20.18.0+)
+- [Rust](https://www.rust-lang.org/tools/install) (1.86.0+)
+
+### 安装依赖
+
+```bash
+# 安装依赖
+npm install
+```
+
+### 开发模式
+
+```bash
+# 启动开发服务器
+npm run tauri dev
+```
+
+### 构建应用
+
+```bash
+# 构建应用程序
+npm run tauri build
+```
+
+## 使用指南
+
+### 数据发送模式
+
+1. 切换到"数据发送"选项卡
+2. 输入目标设备的IP地址和端口号
+3. 在文本框中输入要发送的16进制数据（用空格分隔），或点击"加载默认数据"
+4. 点击"发送数据"按钮
+5. 查看接收到的响应数据及解析结果
+
+### 本地解析模式
+
+1. 切换到"本地解析"选项卡
+2. 在文本框中输入要解析的16进制响应数据，或点击"加载示例数据"
+3. 点击"解析数据"按钮
+4. 查看解析结果
+
+## 协议格式说明
+
+该系统处理的粮情数据遵循以下协议格式：
+
+1. **请求数据格式**：
+   ```
+   AA A0 18 08 23 16 55 36 00 01 A0 01 FF FF FF FF FF FF FF FF FF FF FF FF FF C3 EF EF
+   ```
+
+2. **响应数据格式**：
+   ```
+   aa b0 18 08 23 16 55 36 00 01 28 01 df 00 d2 00 ...
+   ```
+
+   - `aa b0`: 包头标识
+   - `18 08 23 16 55 36 00 01`: 设备编号
+   - `28 01`: 数据长度
+   - 之后的数据为温度传感器数据，每2个字节表示一个温度值
+
+## 项目结构
+
+```
+src-tauri/             # Rust后端代码
+  ├── src/
+  │   ├── lib.rs       # 主模块文件
+  │   ├── main.rs      # 应用程序入口
+  │   └── utils/       # 工具模块目录
+  │       ├── mod.rs
+  │       └── hex_utils.rs  # 16进制数据处理工具
+
+src/                   # 前端Vue代码
+  ├── App.vue          # 主应用组件
+  ├── views/           # 页面级组件
+  │   └── DataTransmitter.vue  # 数据传输页面
+  ├── components/      # 可复用组件
+  │   ├── HexDataDisplay.vue   # 16进制数据显示组件
+  │   ├── ProtocolHeader.vue   # 协议头部显示组件
+  │   └── TemperatureTable.vue # 温度数据表格组件
+  └── utils/           # 工具函数
+      └── dataParser.js # 数据解析工具
+```
+
+## 许可证
+
+[MIT](LICENSE)
