@@ -1,13 +1,11 @@
 <template>
   <div class="container">
-    <h2>粮情数据传输</h2>
-
     <div class="tabs">
       <button 
         @click="activeTab = 'send'" 
         :class="{ 'active': activeTab === 'send' }"
       >
-        数据发送
+        远程解析
       </button>
       <button 
         @click="activeTab = 'parse'" 
@@ -126,8 +124,8 @@ export default {
     const activeTab = ref('send');
     
     // 发送数据相关
-    const ipAddress = ref('127.0.0.1');
-    const port = ref(8080);
+    const ipAddress = ref('192.168.3.231');
+    const port = ref(2000);
     const hexData = ref('AA A0 18 08 23 16 55 36 00 01 A0 01 FF FF FF FF FF FF FF FF FF FF FF FF FF C3 EF EF');
     const isConnecting = ref(false);
     

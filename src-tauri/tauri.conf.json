@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "粮情解析",
+        "title": "粮情数据解析",
         "width": 1000,
         "height": 800
       }
