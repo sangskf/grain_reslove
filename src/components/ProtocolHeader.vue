@@ -13,6 +13,21 @@
         <td>固定为 AA B0</td>
       </tr>
       <tr>
+        <td>采集时间</td>
+        <td>{{ headerInfo.timestamp || '未解析' }}</td>
+        <td>数据采集的时间戳</td>
+      </tr>
+      <tr>
+        <td>日期</td>
+        <td>{{ headerInfo.date || '未解析' }}</td>
+        <td>年-月-日</td>
+      </tr>
+      <tr>
+        <td>时间</td>
+        <td>{{ headerInfo.time || '未解析' }}</td>
+        <td>时:分:秒</td>
+      </tr>
+      <tr>
         <td>设备编号</td>
         <td>{{ headerInfo.deviceId }}</td>
         <td>设备唯一标识</td>

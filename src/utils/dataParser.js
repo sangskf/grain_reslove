@@ -8,6 +8,15 @@ export function parseHexString(hexString) {
 }
 
 /**
+ * BCD码转十进制
+ * @param {number} bcd - BCD编码的值
+ * @returns {number} - 十进制值
+ */
+function bcdToDecimal(bcd) {
+  return Math.floor(bcd / 16) * 10 + (bcd % 16);
+}
+
+/**
  * 解析协议头部信息
  * @param {string[]} hexArray - 16进制数据数组
  * @returns {Object|null} - 解析后的头部信息对象
@@ -18,9 +27,43 @@ export function parseProtocolHeader(hexArray) {
     return null;
   }
   
+  // 解析时间信息 (第2-7位对应年月日时分秒)
+  // 先将16进制字符串转换为数值
+  const yearHex = parseInt(hexArray[2], 16);
+  const monthHex = parseInt(hexArray[3], 16);
+  const dayHex = parseInt(hexArray[4], 16);
+  const hourHex = parseInt(hexArray[5], 16);
+  const minuteHex = parseInt(hexArray[6], 16);
+  const secondHex = parseInt(hexArray[7], 16);
+  
+  // 粮情设备通常使用BCD编码传输时间
+  const year = bcdToDecimal(yearHex);
+  const month = bcdToDecimal(monthHex);
+  const day = bcdToDecimal(dayHex);
+  const hour = bcdToDecimal(hourHex);
+  const minute = bcdToDecimal(minuteHex);
+  const second = bcdToDecimal(secondHex);
+  
+  // 格式化时间字符串 (20xx年)
+  const formattedDate = `20${year.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+  const formattedTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:${second.toString().padStart(2, '0')}`;
+  const timestamp = `${formattedDate} ${formattedTime}`;
+  
+  // 设备ID是从第8位开始的两个字节
+  const deviceId = hexArray.slice(8, 10).join(' ');
+  
   return {
     header: hexArray[0] + ' ' + hexArray[1],
-    deviceId: hexArray.slice(2, 10).join(' '),
+    timestamp: timestamp,
+    date: formattedDate,
+    time: formattedTime,
+    year: 2000 + year,
+    month: month,
+    day: day,
+    hour: hour,
+    minute: minute,
+    second: second,
+    deviceId: deviceId,
     dataLength: parseInt(hexArray[10] + hexArray[11], 16),
     commandCode: hexArray[12]
   };
@@ -34,7 +77,7 @@ export function parseProtocolHeader(hexArray) {
 export function parseTemperatureData(hexArray) {
   const results = [];
   
-  // 从索引13开始解析温度数据
+  // 从索引10开始解析温度数据（按用户要求修改）
   for (let i = 10; i < hexArray.length - 1; i += 2) {
     // 遇到FF FF表示数据结束
     if (hexArray[i] === 'ff' && hexArray[i+1] === 'ff') {
@@ -64,7 +107,7 @@ export function parseTemperatureData(hexArray) {
         temperature = parseFloat(temperature.toFixed(3));
         
         results.push({
-          sensorId: Math.floor((i - 13) / 2) + 1,
+          sensorId: Math.floor((i - 10) / 2) + 1,  // 调整sensorId计算，基于索引10
           temperature: temperature
         });
       }
