@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "粮情数据解析",
+  "productName": "grain_resolve",
   "version": "0.1.0",
   "identifier": "com.grainreslove.app",
   "build": {
