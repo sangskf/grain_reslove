@@ -49,7 +49,7 @@ export function parseProtocolHeader(hexArray, config = null) {
   const timestamp = `${formattedDate} ${formattedTime}`;
   
   // 设备ID是从第8位开始的两个字节
-  const deviceId = hexArray.slice(8, 10).join(' ');
+  const deviceId = parseInt(hexArray[9], 16);  // 将第9位的16进制转换为10进制
   
   // 从协议提供的数据长度中获取，但可能需要根据配置进行调整
   const rawDataLength = hexArray.length;
@@ -146,7 +146,6 @@ export function parseProtocolHeader(hexArray, config = null) {
     deviceId: deviceId,
     rawDataLength: rawDataLength,
     dataLength: adjustedDataLength,
-    commandCode: hexArray[12],
     // 添加环境数据
     indoorTemp: indoorTemp,
     indoorHumidity: indoorHumidity,

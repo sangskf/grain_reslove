@@ -74,7 +74,7 @@
               placeholder="输入要解析的16进制数据，例如: AA B0 18 08 23 16 55 36 00 01 28 01 DF 00 D2 00 EF 00 73 01..."
               rows="5"
           ></textarea>
-          <small>格式: 使用空格分隔每个16进制值，必须符合协议格式（aa b0开头）</small>
+          <small>格式: 使用空格分隔每个16进制值，必须符合协议格式（AA B0开头）</small>
         </div>
 
         <div class="button-group">

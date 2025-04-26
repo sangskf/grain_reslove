@@ -18,19 +18,9 @@
         <td>数据采集的时间戳</td>
       </tr>
       <tr>
-        <td>日期</td>
-        <td>{{ headerInfo.date || '未解析' }}</td>
-        <td>年-月-日</td>
-      </tr>
-      <tr>
-        <td>时间</td>
-        <td>{{ headerInfo.time || '未解析' }}</td>
-        <td>时:分:秒</td>
-      </tr>
-      <tr>
-        <td>设备编号</td>
+        <td>分机地址</td>
         <td>{{ headerInfo.deviceId }}</td>
-        <td>设备唯一标识</td>
+        <td>分机地址</td>
       </tr>
       <tr>
         <td>原始数据长度</td>
@@ -42,11 +32,6 @@
         <td>{{ headerInfo.dataLength }}</td>
         <td v-if="headerInfo.dataLength === headerInfo.rawDataLength">数据区字节长度</td>
         <td v-else class="adjusted-length">基于配置调整后的数据长度</td>
-      </tr>
-      <tr>
-        <td>命令码</td>
-        <td>{{ headerInfo.commandCode }}</td>
-        <td>表示数据类型</td>
       </tr>
     </table>
   </div>
