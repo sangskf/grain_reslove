@@ -43,10 +43,33 @@
               id="subDeviceAddr" 
               v-model.number="subDeviceAddr" 
               type="number" 
-              min="2"
+              min="1"
               max="99"
               placeholder="大于1的整数" 
             />
+          </div>
+        </div>
+        
+        <!-- 添加时间选择器 -->
+        <div class="time-row">
+          <div class="form-group datetime-field">
+            <label for="commandDateTime">命令时间:</label>
+            <div class="datetime-container">
+              <input
+                id="commandDateTime"
+                v-model="commandDateTime"
+                type="datetime-local"
+                step="1"
+                @change="updateCommandWithTime"
+              />
+              <button
+                class="reset-time-btn"
+                @click="resetToCurrentTime"
+                title="重置为当前时间"
+              >
+                <span>⟳</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -109,7 +132,7 @@
 </template>
 
 <script>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { invoke } from '@tauri-apps/api/core';
 
 // 导入子组件
@@ -141,6 +164,34 @@ export default {
     const subDeviceAddr = ref(2); // 默认分机地址为2
     const hexData = ref('AA A0 18 08 23 16 55 36 00 01 A0 01 FF FF FF FF FF FF FF FF FF FF FF FF FF C3 EF EF');
     const isConnecting = ref(false);
+    
+    // 命令时间相关
+    const commandDateTime = ref('');
+    
+    // 设置默认时间为当前时间
+    const setDefaultDateTime = () => {
+      const now = new Date();
+      // 格式化为datetime-local输入框需要的格式 (YYYY-MM-DDTHH:MM:SS)
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      
+      commandDateTime.value = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    };
+    
+    // 重置为当前时间
+    const resetToCurrentTime = () => {
+      setDefaultDateTime();
+      updateCommandWithTime();
+    };
+    
+    // 组件挂载时设置默认时间
+    onMounted(() => {
+      setDefaultDateTime();
+    });
     
     // 本地解析相关
     const localResponseData = ref('');
@@ -180,8 +231,22 @@ export default {
       sensorConfig.value = newConfig;
       console.log('配置已更新:', newConfig);
     };
+    
+    // 将10进制数转换为BCD码
+    const decimalToBCD = (decimal) => {
+      return ((Math.floor(decimal / 10) << 4) | (decimal % 10)) & 0xFF;
+    };
+    
+    // 根据选择的时间更新命令
+    const updateCommandWithTime = () => {
+      try {
+        hexData.value = generateCommand();
+      } catch (err) {
+        console.log('更新时间时出现错误:', err.message);
+      }
+    };
 
-    // 生成发送指令，根据分机地址修改命令
+    // 生成发送指令，根据分机地址和时间修改命令
     const generateCommand = () => {
       // 检查分机地址是否合法
       if (!subDeviceAddr.value || subDeviceAddr.value <= 0) {
@@ -192,9 +257,32 @@ export default {
       const hexValues = hexData.value.trim().split(/\s+/);
       
       // 确保有效的命令格式
-      if (hexValues.length < 10) {
-        throw new Error('命令格式无效，无法更新分机地址');
+      if (hexValues.length < 12) {
+        throw new Error('命令格式无效，无法更新分机地址和时间');
       }
+      
+      // 解析选择的时间
+      const selectedDate = new Date(commandDateTime.value);
+      if (isNaN(selectedDate.getTime())) {
+        throw new Error('请选择有效的日期和时间');
+      }
+      
+      // 设置命令中的时间（位置2-7，年月日时分秒）
+      // 注意：年份只使用后两位，并转换为BCD码
+      const year = selectedDate.getFullYear() % 100; // 获取年份的后两位
+      const month = selectedDate.getMonth() + 1;     // 月份是从0开始的
+      const day = selectedDate.getDate();
+      const hour = selectedDate.getHours();
+      const minute = selectedDate.getMinutes();
+      const second = selectedDate.getSeconds();
+      
+      // 将时间转换为BCD码并设置到命令中
+      hexValues[2] = decimalToBCD(year).toString(16).padStart(2, '0').toUpperCase();
+      hexValues[3] = decimalToBCD(month).toString(16).padStart(2, '0').toUpperCase();
+      hexValues[4] = decimalToBCD(day).toString(16).padStart(2, '0').toUpperCase();
+      hexValues[5] = decimalToBCD(hour).toString(16).padStart(2, '0').toUpperCase();
+      hexValues[6] = decimalToBCD(minute).toString(16).padStart(2, '0').toUpperCase();
+      hexValues[7] = decimalToBCD(second).toString(16).padStart(2, '0').toUpperCase();
       
       // 在协议的第9位设置分机地址
       let subDeviceAddrValue = subDeviceAddr.value;
@@ -210,6 +298,10 @@ export default {
     // 加载默认的16进制发送数据
     const loadDefaultData = () => {
       hexData.value = 'AA A0 18 08 23 16 55 36 00 01 A0 01 FF FF FF FF FF FF FF FF FF FF FF FF FF C3 EF EF';
+      // 重新设置当前时间
+      // setDefaultDateTime();
+      // 用当前时间更新命令
+      // updateCommandWithTime();
     };
     
     // 监听分机地址变化，自动更新发送数据
@@ -263,7 +355,7 @@ export default {
         return;
       }
 
-      // 尝试生成带有分机地址的命令
+      // 尝试生成带有分机地址和时间的命令
       let commandToSend;
       try {
         commandToSend = generateCommand();
@@ -346,6 +438,7 @@ export default {
       ipAddress,
       port,
       subDeviceAddr, // 导出分机地址
+      commandDateTime, // 导出命令时间
       hexData,
       localResponseData,
       isConnecting,
@@ -358,6 +451,8 @@ export default {
       loadSampleResponse,
       sendData,
       parseLocalData,
+      updateCommandWithTime, // 导出更新时间函数
+      resetToCurrentTime, // 导出重置时间函数
       // 配置相关
       configLayers,
       configRows,
@@ -403,9 +498,10 @@ export default {
   background-color: #f8f8f8;
 }
 
-.connection-row {
+.connection-row, .time-row {
   display: flex;
   gap: 20px;
+  margin-bottom: 10px;
 }
 
 .ip-field {
@@ -418,6 +514,35 @@ export default {
 
 .subdevice-field {
   flex: 1;
+}
+
+.datetime-field {
+  flex: 1;
+}
+
+.datetime-container {
+  display: flex;
+  align-items: center;
+}
+
+.reset-time-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  height: 36px;
+  width: 36px;
+  padding: 0;
+  font-size: 18px;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.reset-time-btn:hover {
+  background-color: #4CAF50;
 }
 
 .form-group {
