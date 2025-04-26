@@ -23,10 +23,10 @@ function bcdToDecimal(bcd) {
  * @returns {Object|null} - 解析后的头部信息对象
  */
 export function parseProtocolHeader(hexArray, config = null) {
-  if (hexArray.length < 13) {
+  if (hexArray.length < 10) {
     return null;
   }
-  
+  alert(hexArray.length)
   // 解析时间信息 (第2-7位对应年月日时分秒)
   // 先将16进制字符串转换为数值
   const yearHex = parseInt(hexArray[2], 16);
@@ -57,7 +57,7 @@ export function parseProtocolHeader(hexArray, config = null) {
   
   // 数据长度校正，根据配置和数据量决定
   let adjustedDataLength = rawDataLength;
-  
+
   // 如果提供了配置，则基于传感器点数调整数据长度
   if (config && config.totalPoints) {
     const totalPoints = config.totalPoints;
@@ -65,13 +65,70 @@ export function parseProtocolHeader(hexArray, config = null) {
     // 否则，检查实际数据长度
     if (totalPoints < 512) {
       // 如果协议头声明的数据长度明显不足，但实际数据长度足够
-      if (rawDataLength < 1068 && hexArray.length >= 1068 + 13) {
-        adjustedDataLength = 1068;
-      }
+      adjustedDataLength = 1068;
     } else {
       // 大量传感器点的情况，检查是否有足够的数据
-      if (hexArray.length >= 2136 + 13) {
-        adjustedDataLength = 2136;
+      adjustedDataLength = 2136;
+    }
+  }
+
+  // 解析内温、内湿、外温、外湿数据
+  let indoorTemp = null;
+  let indoorHumidity = null;
+  let outdoorTemp = null;
+  let outdoorHumidity = null;
+
+  // 确保数据长度足够
+  if (hexArray.length >= 1054) {
+    // 解析内湿 (1034位置) - 单字节数据
+    const indoorHumidityIndex = 1034;
+    if (hexArray[indoorHumidityIndex] !== 'FF') {
+      indoorHumidity = parseInt(hexArray[indoorHumidityIndex], 16);
+    }
+
+    // 解析内温 (1035-1036位置) - 双字节数据，注意高低位
+    const indoorTempLowIndex = 1035;
+    const indoorTempHighIndex = 1036;
+    if (hexArray[indoorTempLowIndex] !== 'FF' || hexArray[indoorTempHighIndex] !== 'FF') {
+      const lowByte = parseInt(hexArray[indoorTempLowIndex], 16);
+      const highByte = parseInt(hexArray[indoorTempHighIndex], 16);
+      // 构建16位有符号整数并计算温度值
+      const tempRaw = (highByte << 8) | lowByte;
+      // 判断是否为有效温度值
+      if (!isNaN(tempRaw)) {
+        if ((tempRaw & 0x8000) === 0) {
+          // 正温度
+          indoorTemp = parseFloat((tempRaw * 0.1).toFixed(1));
+        } else {
+          // 负温度
+          indoorTemp = parseFloat((-((0xFFFF - tempRaw + 1) * 0.1)).toFixed(1));
+        }
+      }
+    }
+
+    // 解析外湿 (1052位置) - 单字节数据
+    const outdoorHumidityIndex = 1052;
+    if (hexArray[outdoorHumidityIndex] !== 'FF') {
+      outdoorHumidity = parseInt(hexArray[outdoorHumidityIndex], 16);
+    }
+
+    // 解析外温 (1053-1054位置) - 双字节数据，注意高低位
+    const outdoorTempLowIndex = 1053;
+    const outdoorTempHighIndex = 1054;
+    if (hexArray[outdoorTempLowIndex] !== 'FF' || hexArray[outdoorTempHighIndex] !== 'FF') {
+      const lowByte = parseInt(hexArray[outdoorTempLowIndex], 16);
+      const highByte = parseInt(hexArray[outdoorTempHighIndex], 16);
+      // 构建16位有符号整数并计算温度值
+      const tempRaw = (highByte << 8) | lowByte;
+      // 判断是否为有效温度值
+      if (!isNaN(tempRaw)) {
+        if ((tempRaw & 0x8000) === 0) {
+          // 正温度
+          outdoorTemp = parseFloat((tempRaw * 0.1).toFixed(1));
+        } else {
+          // 负温度
+          outdoorTemp = parseFloat((-((0xFFFF - tempRaw + 1) * 0.1)).toFixed(1));
+        }
       }
     }
   }
@@ -90,7 +147,12 @@ export function parseProtocolHeader(hexArray, config = null) {
     deviceId: deviceId,
     rawDataLength: rawDataLength,
     dataLength: adjustedDataLength,
-    commandCode: hexArray[12]
+    commandCode: hexArray[12],
+    // 添加环境数据
+    indoorTemp: indoorTemp,
+    indoorHumidity: indoorHumidity,
+    outdoorTemp: outdoorTemp,
+    outdoorHumidity: outdoorHumidity
   };
 }
 
@@ -115,7 +177,7 @@ export function parseTemperatureData(hexArray, config = null) {
   // 从索引10开始解析温度数据，跳过头部
   for (let i = 10; i < dataBytesToParse - 1; i += 2) {
     // 遇到FF FF表示数据结束
-    if (hexArray[i] === 'ff' && hexArray[i+1] === 'ff') {
+    if (hexArray[i] === 'FF' && hexArray[i+1] === 'FF') {
       break;
     }
     
@@ -168,75 +230,4 @@ export function hexToBytes(hexString) {
   }
   
   return bytes;
-}
-
-/**
- * 特定解析1034-1057位置的温湿度数据
- * @param {string[]} hexArray - 16进制数据数组
- * @returns {Object} - 解析后的温湿度数据
- */
-export function parseSpecificRegion(hexArray) {
-  // 检查数据长度是否足够
-  if (hexArray.length < 1058) {
-    console.warn('数据长度不足，无法解析1034-1057位置');
-    return { temperatures: [], humidities: [] };
-  }
-  
-  const temperatures = [];
-  const humidities = [];
-  
-  // 解析1034-1057位置的数据
-  // 假设每4个字节为一组数据，前2个字节为温度，后2个字节为湿度
-  for (let i = 1034; i < 1058; i += 4) {
-    if (i + 3 >= hexArray.length) break;
-    
-    try {
-      // 温度数据解析 (注意: 低位在前，高位在后)
-      const tempLowByte = parseInt(hexArray[i], 16);
-      const tempHighByte = parseInt(hexArray[i+1], 16);
-      
-      // 湿度数据解析 (注意: 低位在前，高位在后)
-      const humLowByte = parseInt(hexArray[i+2], 16);
-      const humHighByte = parseInt(hexArray[i+3], 16);
-      
-      if (!isNaN(tempHighByte) && !isNaN(tempLowByte) && 
-          !isNaN(humHighByte) && !isNaN(humLowByte)) {
-        
-        // 使用位运算构建温度的16位有符号整数
-        const tempRaw = (tempHighByte << 8) | tempLowByte;
-        
-        // 判断温度符号位并正确计算
-        let temperature;
-        if ((tempRaw & 0x8000) === 0) {
-          // 正温度: 直接乘以0.1 (假设温度精度为0.1℃)
-          temperature = tempRaw * 0.1;
-        } else {
-          // 负温度: 需要进行二进制补码处理
-          temperature = -((0xFFFF - tempRaw + 1) * 0.1);
-        }
-        
-        // 湿度通常为无符号值，范围0-100%
-        const humidity = ((humHighByte << 8) | humLowByte) * 0.1;
-        
-        // 保留1位小数
-        temperature = parseFloat(temperature.toFixed(1));
-        const humidityValue = parseFloat(humidity.toFixed(1));
-        
-        // 添加到结果数组
-        temperatures.push({
-          position: i,
-          temperature: temperature
-        });
-        
-        humidities.push({
-          position: i,
-          humidity: Math.min(humidityValue, 100) // 湿度上限为100%
-        });
-      }
-    } catch (e) {
-      console.error(`解析1034-1057位置数据错误 (位置 ${i}):`, e);
-    }
-  }
-  
-  return { temperatures, humidities };
 } 

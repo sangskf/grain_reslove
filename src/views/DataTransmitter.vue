@@ -71,7 +71,7 @@
           <textarea
               id="responseData"
               v-model="localResponseData"
-              placeholder="输入要解析的16进制数据，例如: aa b0 18 08 23 16 55 36 00 01 28 01 df 00 d2 00 ef 00 73 01..."
+              placeholder="输入要解析的16进制数据，例如: AA B0 18 08 23 16 55 36 00 01 28 01 DF 00 D2 00 EF 00 73 01..."
               rows="5"
           ></textarea>
           <small>格式: 使用空格分隔每个16进制值，必须符合协议格式（aa b0开头）</small>
@@ -92,11 +92,14 @@
     <protocol-header v-if="headerInfo" :headerInfo="headerInfo" />
 
     <temperature-table v-if="parsedData.length > 0" :temperatures="parsedData" />
+    
+    <!-- 环境数据显示 -->
+    <environment-data v-if="headerInfo" :env-data="environmentData" />
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { invoke } from '@tauri-apps/api/core';
 
 // 导入子组件
@@ -104,6 +107,7 @@ import HexDataDisplay from '../components/HexDataDisplay.vue';
 import ProtocolHeader from '../components/ProtocolHeader.vue';
 import TemperatureTable from '../components/TemperatureTable.vue';
 import ConfigPanel from '../components/ConfigPanel.vue';
+import EnvironmentData from '../components/EnvironmentData.vue';
 
 // 导入工具函数
 import { parseHexString, parseProtocolHeader, parseTemperatureData } from '../utils/dataParser';
@@ -114,7 +118,8 @@ export default {
     HexDataDisplay,
     ProtocolHeader,
     TemperatureTable,
-    ConfigPanel
+    ConfigPanel,
+    EnvironmentData
   },
   setup() {
     // 选项卡切换
@@ -146,6 +151,18 @@ export default {
     const response = ref('');
     const parsedData = ref([]);
     const headerInfo = ref(null);
+    
+    // 环境数据对象
+    const environmentData = computed(() => {
+      if (!headerInfo.value) return {};
+      
+      return {
+        indoorTemp: headerInfo.value.indoorTemp,
+        indoorHumidity: headerInfo.value.indoorHumidity,
+        outdoorTemp: headerInfo.value.outdoorTemp,
+        outdoorHumidity: headerInfo.value.outdoorHumidity
+      };
+    });
 
     // 处理配置更新
     const handleConfigUpdate = (newConfig) => {
@@ -160,7 +177,7 @@ export default {
     
     // 加载示例的16进制响应数据
     const loadSampleResponse = () => {
-      localResponseData.value = 'aa b0 18 08 23 16 55 36 00 01 28 01 df 00 d2 00 ef 00 73 01 27 01 d1 00 74 00 70 00 b7 00 2e 01 ee 00 6e 00 67 00 a5 00 2f 01 d4 00 70 00 70 00 b2 00 2b 01 fd 00 66 00 60 00 91 00 37 01 2c 01 e2 00 10 01 15 01 2e 01 35 01 73 00 4e 00 57 00 35 01 09 01 5e 00 4a 00 98 00 32 01 b8 00 53 00 59 00 1a 01 31 01 e8 00 82 00 76 00 b4 00 1d 01 23 01 fd 00 fe 00 2a 01 3c 01 3c 01 61 00 4b 00 72 00 31 01 2f 01 60 00 4c 00 6e 00 26 01 2d 01 63 00 49 00 6a 00 32 01 2f 01 ce 00 bf 00 c3 00 27 01 2f 01 9c 00 93 00 ab 00 2e 01 1f 01 68 00 50 00 73 00 40 01 15 01 5f 00 50 00 80 00 32 01 c6 00 53 00 46 00 76 00 27 01 e9 00 91 00 8c 00 b4 00 3e 01 30 01 8e 00 68 00 76 00 33 01 32 01 66 00 48 00 53 00 23 01 28 01 6e 00 4e 00 5f 00 30 01 3a 01 71 00 4b 00 5e 00 3d 01 21 01 6b 00 4f 00 58 00 38 01 44 01 38 01 41 01 3b 01 40 01 3b 01 72 00 54 00 6a 00 36 01 45 01 70 00 52 00 63 00 36 01 32 01 35 01 38 01 47 01 3c 01 29 01 76 00 58 00 78 00 2d 01 3c 01 9a 00 70 00 74 00 21 01 2d 01 89 00 4f 00 57 00 22 01 2e 01 7b 00 4d 00 58 00 32 01 21 01 7e 00 4b 00 59 00 43 01 33 01 6f 00 4b 00 5f 00 3f 01 a0 00 85 00 a2 00 64 01 43 01 ce 00 56 00 4e 00 73 00 38 01 43 01 70 00 4d 00 51 00 2a 01 90 00 52 00 53 00 a5 00 2e 01 2b 01 70 00 4e 00 59 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 3a 00 cb ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 4c 00 c3 ff ff ff ff ff ff ff ff ff 3b aa ef ef';
+      localResponseData.value = 'AA B0 18 08 23 16 55 36 00 01 28 01 DF 00 D2 00 EF 00 73 01 27 01 D1 00 74 00 70 00 B7 00 2E 01 EE 00 6E 00 67 00 A5 00 2F 01 D4 00 70 00 70 00 B2 00 2B 01 FD 00 66 00 60 00 91 00 37 01 2C 01 E2 00 10 01 15 01 2E 01 35 01 73 00 4E 00 57 00 35 01 09 01 5E 00 4A 00 98 00 32 01 B8 00 53 00 59 00 1A 01 31 01 E8 00 82 00 76 00 B4 00 1D 01 23 01 FD 00 FE 00 2A 01 3C 01 3C 01 61 00 4B 00 72 00 31 01 2F 01 60 00 4C 00 6E 00 26 01 2D 01 63 00 49 00 6A 00 32 01 2F 01 CE 00 BF 00 C3 00 27 01 2F 01 9C 00 93 00 AB 00 2E 01 1F 01 68 00 50 00 73 00 40 01 15 01 5F 00 50 00 80 00 32 01 C6 00 53 00 46 00 76 00 27 01 E9 00 91 00 8C 00 B4 00 3E 01 30 01 8E 00 68 00 76 00 33 01 32 01 66 00 48 00 53 00 23 01 28 01 6E 00 4E 00 5F 00 30 01 3A 01 71 00 4B 00 5E 00 3D 01 21 01 6B 00 4F 00 58 00 38 01 44 01 38 01 41 01 3B 01 40 01 3B 01 72 00 54 00 6A 00 36 01 45 01 70 00 52 00 63 00 36 01 32 01 35 01 38 01 47 01 3C 01 29 01 76 00 58 00 78 00 2D 01 3C 01 9A 00 70 00 74 00 21 01 2D 01 89 00 4F 00 57 00 22 01 2E 01 7B 00 4D 00 58 00 32 01 21 01 7E 00 4B 00 59 00 43 01 33 01 6F 00 4B 00 5F 00 3F 01 A0 00 85 00 A2 00 64 01 43 01 CE 00 56 00 4E 00 73 00 38 01 43 01 70 00 4D 00 51 00 2A 01 90 00 52 00 53 00 A5 00 2E 01 2B 01 70 00 4E 00 59 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 3A 00 CB FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 4C 00 C3 FF FF FF FF FF FF FF FF FF 3B AA EF EF';
     };
 
     // 验证16进制数据格式
@@ -248,7 +265,7 @@ export default {
       const hexArray = hexResponse.split(/\s+/);
 
       // 检查包头是否符合协议（aa b0）
-      if (hexArray[0] !== 'aa' || hexArray[1] !== 'b0') {
+      if (hexArray[0] !== 'AA' || hexArray[1] !== 'B0') {
         error.value = '接收数据格式错误，无效的包头';
         return;
       }
@@ -271,6 +288,7 @@ export default {
       response,
       parsedData,
       headerInfo,
+      environmentData,
       loadDefaultData,
       loadSampleResponse,
       sendData,

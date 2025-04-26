@@ -1,7 +1,7 @@
 <template>
   <div class="hex-display">
     <div class="header">
-      <h3>接收数据:</h3>
+    <h3>接收数据:</h3>
       <button class="toggle-btn" @click="toggleDisplay">
         {{ isVisible ? '隐藏' : '显示' }}
       </button>
