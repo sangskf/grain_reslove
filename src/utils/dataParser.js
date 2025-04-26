@@ -79,7 +79,7 @@ export function parseProtocolHeader(hexArray, config = null) {
   let outdoorHumidity = null;
 
   // 确保数据长度足够
-  if (hexArray.length >= 1054) {
+  if (hexArray.length == 1068) {
     // 解析内湿 (1034位置) - 单字节数据
     const indoorHumidityIndex = 1034;
     if (hexArray[indoorHumidityIndex] !== 'FF') {
@@ -87,8 +87,8 @@ export function parseProtocolHeader(hexArray, config = null) {
     }
 
     // 解析内温 (1035-1036位置) - 双字节数据，注意高低位
-    const indoorTempLowIndex = 1035;
-    const indoorTempHighIndex = 1036;
+    const indoorTempLowIndex = 1036;
+    const indoorTempHighIndex = 1035;
     if (hexArray[indoorTempLowIndex] !== 'FF' || hexArray[indoorTempHighIndex] !== 'FF') {
       const lowByte = parseInt(hexArray[indoorTempLowIndex], 16);
       const highByte = parseInt(hexArray[indoorTempHighIndex], 16);
@@ -113,8 +113,8 @@ export function parseProtocolHeader(hexArray, config = null) {
     }
 
     // 解析外温 (1053-1054位置) - 双字节数据，注意高低位
-    const outdoorTempLowIndex = 1053;
-    const outdoorTempHighIndex = 1054;
+    const outdoorTempLowIndex = 1054;
+    const outdoorTempHighIndex = 1053;
     if (hexArray[outdoorTempLowIndex] !== 'FF' || hexArray[outdoorTempHighIndex] !== 'FF') {
       const lowByte = parseInt(hexArray[outdoorTempLowIndex], 16);
       const highByte = parseInt(hexArray[outdoorTempHighIndex], 16);
