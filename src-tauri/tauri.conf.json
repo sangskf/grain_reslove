@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "grain_reslove",
+  "productName": "粮情数据解析",
   "version": "0.1.0",
   "identifier": "com.grainreslove.app",
   "build": {
@@ -14,7 +14,9 @@
       {
         "title": "粮情数据解析",
         "width": 1000,
-        "height": 800
+        "height": 800,
+        "minHeight": 600,
+        "minWidth": 800
       }
     ],
     "security": {
@@ -22,6 +24,7 @@
     }
   },
   "bundle": {
+    "createUpdaterArtifacts": true,
     "active": true,
     "targets": "all",
     "icon": [
@@ -31,5 +34,17 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQxMzdEOTFDMDdCOUQ4OUQKUldTZDJMa0hITmszMFlJSmxzbENqS0dWSXV1MmFJMFZyanFUbUc2M201ZG16M2lPNXN2VHRMamQK",
+      "endpoints": [
+        "https://mirror.ghproxy.com/https://github.com/sangskf/grain_reslove/releases/download/updater/latest.json",
+        "https://github.com/sangskf/grain_reslove/releases/download/updater/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
   }
 }

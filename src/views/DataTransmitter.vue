@@ -350,8 +350,8 @@ export default {
       }
       
       // 验证分机地址
-      if (!subDeviceAddr.value || subDeviceAddr.value <= 1) {
-        error.value = '分机地址必须是大于1的正整数';
+      if (!subDeviceAddr.value || subDeviceAddr.value <= 0) {
+        error.value = '分机地址必须是大于0的正整数';
         return;
       }
 

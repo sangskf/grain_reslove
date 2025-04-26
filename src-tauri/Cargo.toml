@@ -25,3 +25,8 @@ serde_json = "1"
 tauri-plugin-os = "2"
 tauri-plugin-websocket = "2"
 serialport = "4.2"
+tauri-plugin-process = "2"
+tauri-plugin-app = "2.0.0-alpha.2"
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-updater = "2"
