@@ -36,6 +36,18 @@
             <label for="port">端口号:</label>
             <input id="port" v-model="port" type="number" placeholder="例如: 8080" />
           </div>
+          
+          <div class="form-group subdevice-field">
+            <label for="subDeviceAddr">分机地址:</label>
+            <input 
+              id="subDeviceAddr" 
+              v-model.number="subDeviceAddr" 
+              type="number" 
+              min="2"
+              max="99"
+              placeholder="大于1的整数" 
+            />
+          </div>
         </div>
       </div>
 
@@ -97,7 +109,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { invoke } from '@tauri-apps/api/core';
 
 // 导入子组件
@@ -126,6 +138,7 @@ export default {
     // 发送数据相关
     const ipAddress = ref('192.168.3.231');
     const port = ref(2000);
+    const subDeviceAddr = ref(2); // 默认分机地址为2
     const hexData = ref('AA A0 18 08 23 16 55 36 00 01 A0 01 FF FF FF FF FF FF FF FF FF FF FF FF FF C3 EF EF');
     const isConnecting = ref(false);
     
@@ -168,10 +181,48 @@ export default {
       console.log('配置已更新:', newConfig);
     };
 
+    // 生成发送指令，根据分机地址修改命令
+    const generateCommand = () => {
+      // 检查分机地址是否合法
+      if (!subDeviceAddr.value || subDeviceAddr.value <= 0) {
+        throw new Error('分机地址必须是大于0的正整数');
+      }
+      
+      // 解析当前hexData，以便修改
+      const hexValues = hexData.value.trim().split(/\s+/);
+      
+      // 确保有效的命令格式
+      if (hexValues.length < 10) {
+        throw new Error('命令格式无效，无法更新分机地址');
+      }
+      
+      // 在协议的第9位设置分机地址
+      let subDeviceAddrValue = subDeviceAddr.value;
+      // 转换为16进制字符串，并确保两位数（前面补0）
+      let hexSubDeviceAddr = subDeviceAddrValue.toString(16).padStart(2, '0').toUpperCase();
+      hexValues[9] = hexSubDeviceAddr;
+      hexValues[11] = hexSubDeviceAddr;
+
+      // 重新组合命令
+      return hexValues.join(' ');
+    };
+
     // 加载默认的16进制发送数据
     const loadDefaultData = () => {
       hexData.value = 'AA A0 18 08 23 16 55 36 00 01 A0 01 FF FF FF FF FF FF FF FF FF FF FF FF FF C3 EF EF';
     };
+    
+    // 监听分机地址变化，自动更新发送数据
+    watch(subDeviceAddr, (newValue) => {
+      try {
+        if (newValue && newValue >= 1 && newValue < 100) {
+          hexData.value = generateCommand();
+        }
+      } catch (err) {
+        // 分机地址变化过程中可能出现暂时性错误，不在此处显示
+        console.log('地址更新时出现错误:', err.message);
+      }
+    });
     
     // 加载示例的16进制响应数据
     const loadSampleResponse = () => {
@@ -205,9 +256,24 @@ export default {
         error.value = '请输入IP地址和端口号';
         return;
       }
+      
+      // 验证分机地址
+      if (!subDeviceAddr.value || subDeviceAddr.value <= 1) {
+        error.value = '分机地址必须是大于1的正整数';
+        return;
+      }
+
+      // 尝试生成带有分机地址的命令
+      let commandToSend;
+      try {
+        commandToSend = generateCommand();
+      } catch (err) {
+        error.value = err.message;
+        return;
+      }
 
       // 验证16进制数据
-      const validation = validateHexData(hexData.value);
+      const validation = validateHexData(commandToSend);
       if (!validation.valid) {
         error.value = validation.message;
         return;
@@ -224,7 +290,7 @@ export default {
         const result = await invoke('send_hex_data', {
           ip: ipAddress.value,
           port: parseInt(port.value),
-          data: hexData.value
+          data: commandToSend
         });
 
         if (result) {
@@ -279,6 +345,7 @@ export default {
       activeTab,
       ipAddress,
       port,
+      subDeviceAddr, // 导出分机地址
       hexData,
       localResponseData,
       isConnecting,
@@ -342,10 +409,14 @@ export default {
 }
 
 .ip-field {
-  flex: 3;
+  flex: 1;
 }
 
 .port-field {
+  flex: 1;
+}
+
+.subdevice-field {
   flex: 1;
 }
 
