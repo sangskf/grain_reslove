@@ -53,8 +53,8 @@ export function parseProtocolHeader(hexArray, config = null) {
   const deviceId = hexArray.slice(8, 10).join(' ');
   
   // 从协议提供的数据长度中获取，但可能需要根据配置进行调整
-  const rawDataLength = parseInt(hexArray[10] + hexArray[11], 16);
-  
+  const rawDataLength = hexArray.length;
+
   // 数据长度校正，根据配置和数据量决定
   let adjustedDataLength = rawDataLength;
 
@@ -63,7 +63,7 @@ export function parseProtocolHeader(hexArray, config = null) {
     const totalPoints = config.totalPoints;
     // 如果传感器点数小于512，则使用1068字节
     // 否则，检查实际数据长度
-    if (totalPoints < 512) {
+    if (totalPoints <= 512) {
       // 如果协议头声明的数据长度明显不足，但实际数据长度足够
       adjustedDataLength = 1068;
     } else {
