@@ -23,10 +23,9 @@ function bcdToDecimal(bcd) {
  * @returns {Object|null} - 解析后的头部信息对象
  */
 export function parseProtocolHeader(hexArray, config = null) {
-  if (hexArray.length < 10) {
+  if (hexArray.length < 1068) {
     return null;
   }
-  alert(hexArray.length)
   // 解析时间信息 (第2-7位对应年月日时分秒)
   // 先将16进制字符串转换为数值
   const yearHex = parseInt(hexArray[2], 16);
