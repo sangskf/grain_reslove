@@ -13,6 +13,7 @@ export function parseHexString(hexString) {
  * @returns {Object|null} - 解析后的头部信息对象
  */
 export function parseProtocolHeader(hexArray) {
+  console.log(hexArray)
   if (hexArray.length < 13) {
     return null;
   }
