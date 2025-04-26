@@ -33,9 +33,15 @@
         <td>设备唯一标识</td>
       </tr>
       <tr>
-        <td>数据长度</td>
+        <td>原始数据长度</td>
+        <td>{{ headerInfo.rawDataLength }}</td>
+        <td>协议中的数据区字节长度</td>
+      </tr>
+      <tr>
+        <td>调整后数据长度</td>
         <td>{{ headerInfo.dataLength }}</td>
-        <td>数据区字节长度</td>
+        <td v-if="headerInfo.dataLength === headerInfo.rawDataLength">数据区字节长度</td>
+        <td v-else class="adjusted-length">基于配置调整后的数据长度</td>
       </tr>
       <tr>
         <td>命令码</td>
@@ -89,5 +95,10 @@ th {
 
 tr:nth-child(even) {
   background-color: #f9f9f9;
+}
+
+.adjusted-length {
+  color: #e53935;
+  font-weight: bold;
 }
 </style> 

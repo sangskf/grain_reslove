@@ -17,6 +17,14 @@
       </button>
     </div>
 
+    <!-- 传感器配置面板，共享于两个选项卡 -->
+    <config-panel 
+      :initial-layers="configLayers"
+      :initial-rows="configRows"
+      :initial-columns="configColumns"
+      @config-updated="handleConfigUpdate"
+    />
+
     <!-- 发送数据面板 -->
     <div v-if="activeTab === 'send'">
       <div class="connection-panel">
@@ -95,6 +103,7 @@ import { invoke } from '@tauri-apps/api/core';
 import HexDataDisplay from '../components/HexDataDisplay.vue';
 import ProtocolHeader from '../components/ProtocolHeader.vue';
 import TemperatureTable from '../components/TemperatureTable.vue';
+import ConfigPanel from '../components/ConfigPanel.vue';
 
 // 导入工具函数
 import { parseHexString, parseProtocolHeader, parseTemperatureData } from '../utils/dataParser';
@@ -104,7 +113,8 @@ export default {
   components: {
     HexDataDisplay,
     ProtocolHeader,
-    TemperatureTable
+    TemperatureTable,
+    ConfigPanel
   },
   setup() {
     // 选项卡切换
@@ -119,11 +129,29 @@ export default {
     // 本地解析相关
     const localResponseData = ref('');
     
+    // 传感器配置
+    const configLayers = ref(8);
+    const configRows = ref(8);
+    const configColumns = ref(8);
+    const sensorConfig = ref({
+      layers: 8,
+      rows: 8,
+      columns: 8,
+      totalPoints: 512,
+      dataSize: 1068
+    });
+    
     // 共用状态
     const error = ref('');
     const response = ref('');
     const parsedData = ref([]);
     const headerInfo = ref(null);
+
+    // 处理配置更新
+    const handleConfigUpdate = (newConfig) => {
+      sensorConfig.value = newConfig;
+      console.log('配置已更新:', newConfig);
+    };
 
     // 加载默认的16进制发送数据
     const loadDefaultData = () => {
@@ -132,7 +160,7 @@ export default {
     
     // 加载示例的16进制响应数据
     const loadSampleResponse = () => {
-      localResponseData.value = 'aa b0 18 08 23 16 55 36 00 01 28 01 df 00 d2 00 ef 00 73 01 27 01 d1 00 74 00 70 00 b7 00 2e 01 ee 00 6e 00 67 00 a5 00 2f 01 d4 00 70 00 70 00 b2 00 2b 01 fd 00 66 00 60 00 91 00 37 01 2c 01 e2 00 10 01 15 01 2e 01 35 01 73 00 4e 00 57 00 35 01 09 01 5e 00 4a 00 98 00 32 01 b8 00 53 00 59 00 1a 01 31 01 e8 00 82 00 76 00 b4 00 1d 01 23 01 fd 00 fe 00 2a 01 3c 01 3c 01 61 00 4b 00 72 00 31 01 2f 01 60 00 4c 00 6e 00 26 01 2d 01 63 00 49 00 6a 00 32 01 2f 01 ce 00 bf 00 c3 00 27 01 2f 01 9c 00 93 00 ab 00 2e 01 1f 01 68 00 50 00 73 00 40 01 15 01 5f 00 50 00 80 00 32 01 c6 00 53 00 46 00 76 00 27 01 e9 00 91 00 8c 00 b4 00 3e 01 30 01 8e 00 68 00 76 00 33 01 32 01 66 00 48 00 53 00 23 01 28 01 6e 00 4e 00 5f 00 30 01 3a 01 71 00 4b 00 5e 00 3d 01 21 01 6b 00 4f 00 58 00 38 01 44 01 38 01 41 01 3b 01 40 01 3b 01 72 00 54 00 6a 00 36 01 45 01 70 00 52 00 63 00 36 01 32 01 35 01 38 01 47 01 3c 01 29 01 76 00 58 00 78 00 2d 01 3c 01 9a 00 70 00 74 00 21 01 2d 01 89 00 4f 00 57 00 22 01 2e 01 7b 00 4d 00 58 00 32 01 21 01 7e 00 4b 00 59 00 43 01 33 01 6f 00 4b 00 5f 00 3f 01 a0 00 85 00 a2 00 64 01 43 01 ce 00 56 00 4e 00 73 00 38 01 43 01 70 00 4d 00 51 00 2a 01 90 00 52 00 53 00 a5 00 2e 01 2b 01 70 00 4e 00 59 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 3a 00 cb ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 4c 00 c3 ff ff ff ff ff ff ff ff ff 3b aa ef ef';
+      localResponseData.value = 'aa b0 18 08 23 16 55 36 00 01 28 01 df 00 d2 00 ef 00 73 01 27 01 d1 00 74 00 70 00 b7 00 2e 01 ee 00 6e 00 67 00 a5 00 2f 01 d4 00 70 00 70 00 b2 00 2b 01 fd 00 66 00 60 00 91 00 37 01 2c 01 e2 00 10 01 15 01 2e 01 35 01 73 00 4e 00 57 00 35 01 09 01 5e 00 4a 00 98 00 32 01 b8 00 53 00 59 00 1a 01 31 01 e8 00 82 00 76 00 b4 00 1d 01 23 01 fd 00 fe 00 2a 01 3c 01 3c 01 61 00 4b 00 72 00 31 01 2f 01 60 00 4c 00 6e 00 26 01 2d 01 63 00 49 00 6a 00 32 01 2f 01 ce 00 bf 00 c3 00 27 01 2f 01 9c 00 93 00 ab 00 2e 01 1f 01 68 00 50 00 73 00 40 01 15 01 5f 00 50 00 80 00 32 01 c6 00 53 00 46 00 76 00 27 01 e9 00 91 00 8c 00 b4 00 3e 01 30 01 8e 00 68 00 76 00 33 01 32 01 66 00 48 00 53 00 23 01 28 01 6e 00 4e 00 5f 00 30 01 3a 01 71 00 4b 00 5e 00 3d 01 21 01 6b 00 4f 00 58 00 38 01 44 01 38 01 41 01 3b 01 40 01 3b 01 72 00 54 00 6a 00 36 01 45 01 70 00 52 00 63 00 36 01 32 01 35 01 38 01 47 01 3c 01 29 01 76 00 58 00 78 00 2d 01 3c 01 9a 00 70 00 74 00 21 01 2d 01 89 00 4f 00 57 00 22 01 2e 01 7b 00 4d 00 58 00 32 01 21 01 7e 00 4b 00 59 00 43 01 33 01 6f 00 4b 00 5f 00 3f 01 a0 00 85 00 a2 00 64 01 43 01 ce 00 56 00 4e 00 73 00 38 01 43 01 70 00 4d 00 51 00 2a 01 90 00 52 00 53 00 a5 00 2e 01 2b 01 70 00 4e 00 59 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 3a 00 cb ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 4c 00 c3 ff ff ff ff ff ff ff ff ff 3b aa ef ef';
     };
 
     // 验证16进制数据格式
@@ -226,10 +254,10 @@ export default {
       }
 
       // 解析头部信息
-      headerInfo.value = parseProtocolHeader(hexArray);
+      headerInfo.value = parseProtocolHeader(hexArray, sensorConfig.value);
 
       // 解析温度数据
-      parsedData.value = parseTemperatureData(hexArray);
+      parsedData.value = parseTemperatureData(hexArray, sensorConfig.value);
     };
 
     return {
@@ -246,7 +274,12 @@ export default {
       loadDefaultData,
       loadSampleResponse,
       sendData,
-      parseLocalData
+      parseLocalData,
+      // 配置相关
+      configLayers,
+      configRows,
+      configColumns,
+      handleConfigUpdate
     };
   }
 };

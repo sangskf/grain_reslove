@@ -1,12 +1,17 @@
 <template>
   <div class="hex-display">
-    <h3>接收数据:</h3>
-    <div class="hex-data">{{ formattedHexData }}</div>
+    <div class="header">
+      <h3>接收数据:</h3>
+      <button class="toggle-btn" @click="toggleDisplay">
+        {{ isVisible ? '隐藏' : '显示' }}
+      </button>
+    </div>
+    <div class="hex-data" v-if="isVisible">{{ formattedHexData }}</div>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 export default {
   name: 'HexDataDisplay',
@@ -17,6 +22,12 @@ export default {
     }
   },
   setup(props) {
+    const isVisible = ref(false);
+    
+    const toggleDisplay = () => {
+      isVisible.value = !isVisible.value;
+    };
+    
     // 格式化16进制响应数据以便于显示
     const formattedHexData = computed(() => {
       if (!props.hexData) return '';
@@ -35,7 +46,9 @@ export default {
     });
     
     return {
-      formattedHexData
+      formattedHexData,
+      isVisible,
+      toggleDisplay
     };
   }
 };
@@ -49,9 +62,30 @@ export default {
   border-radius: 4px;
 }
 
-h3 {
-  margin-top: 0;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
+}
+
+h3 {
+  margin: 0;
+}
+
+.toggle-btn {
+  padding: 4px 8px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.2s;
+}
+
+.toggle-btn:hover {
+  background-color: #45a049;
 }
 
 .hex-data {
@@ -62,5 +96,28 @@ h3 {
   border-radius: 4px;
   overflow-x: auto;
   line-height: 1.5;
+  max-height: 300px;
+  overflow-y: auto;
+  font-size: 14px;
+  border: 1px solid #ccc;
+}
+
+.hex-data::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.hex-data::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.hex-data::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.hex-data::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 </style> 
