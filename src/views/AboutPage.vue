@@ -1,6 +1,6 @@
 <template>
   <div class="about-container">
-    <h2>关于本应用</h2>
+    <h2>关于应用</h2>
     
     <div class="about-section">
       <h3>功能介绍</h3>
@@ -53,7 +53,7 @@
 .about-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 20px;
 }
 
 h2 {

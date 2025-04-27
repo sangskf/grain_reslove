@@ -143,10 +143,10 @@ export default {
 
 <style scoped>
 .log-container {
-  padding: 0 20px;
+  margin: 0 auto;
+  padding: 20px;
   font-size: 0.8rem;
   max-width: 1200px;
-  margin: 0 auto;
 }
 
 h2 {
