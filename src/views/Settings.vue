@@ -310,27 +310,6 @@ button.secondary:hover {
   background-color: #e0e0e0;
 }
 
-.feature-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.feature-item {
-  display: flex;
-  background-color: white;
-  border-radius: 8px;
-  padding: 20px;
-}
-
-.feature-icon {
-  font-size: 2rem;
-  margin-right: 20px;
-  display: flex;
-  align-items: center;
-}
-
 .feature-text h4 {
   margin: 0 0 10px 0;
   font-size: 1.1rem;
@@ -339,12 +318,6 @@ button.secondary:hover {
 .feature-text p {
   margin: 0;
   color: #555;
-}
-
-.help-links {
-  list-style-type: none;
-  padding: 0;
-  margin-top: 15px;
 }
 
 .help-links li {
