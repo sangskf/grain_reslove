@@ -519,11 +519,12 @@ export default {
 
         const result = await Promise.race([sendPromise, timeoutPromise]);
 
-        console.log("后端返回的数据", result)
         if (result) {
           response.value = result;
-          processResponse(result);
-          logger.info(`成功接收来自 ${ipAddress.value}:${port.value} 的响应数据`);
+          // 转换为大写（如果选项启用）
+          const processedData = convertHexToUppercaseIfNeeded(result);
+          processResponse(processedData);
+          logger.info(`成功接收来自 ${ipAddress.value}:${port.value} 的响应数据=> ${result}`);
         }
       } catch (err) {
         if (err.message.includes('timeout') || err.message.includes('超时')) {
