@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "grain_reslove",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "identifier": "com.grainreslove.app",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -39,8 +39,8 @@
     "updater": {
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQxMzdEOTFDMDdCOUQ4OUQKUldTZDJMa0hITmszMFlJSmxzbENqS0dWSXV1MmFJMFZyanFUbUc2M201ZG16M2lPNXN2VHRMamQK",
       "endpoints": [
-        "https://ghproxy.net/https://github.com/sangskf/grain_reslove/releases/download/v0.1.0/latest.json",
-        "https://github.com/sangskf/grain_reslove/releases/download/v0.1.0/latest.json"
+        "https://ghproxy.net/https://github.com/sangskf/grain_reslove/releases/download/v0.1.4/latest.json",
+        "https://github.com/sangskf/grain_reslove/releases/download/v0.1.4/latest.json"
       ],
       "windows": {
         "installMode": "passive"
