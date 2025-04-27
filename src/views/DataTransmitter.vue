@@ -155,6 +155,10 @@ import EnvironmentData from '../components/EnvironmentData.vue';
 
 // 导入工具函数
 import { parseHexString, parseProtocolHeader, parseTemperatureData } from '../utils/dataParser';
+import { createLogger } from '../utils/logger';
+
+// 创建日志记录器
+const logger = createLogger('数据传输');
 
 export default {
   name: 'DataTransmitter',
@@ -459,12 +463,14 @@ export default {
     const sendData = async () => {
       if (!ipAddress.value || !port.value) {
         error.value = '请输入IP地址和端口号';
+        logger.error('发送失败: IP地址或端口号为空');
         return;
       }
       
       // 验证分机地址
       if (!subDeviceAddr.value || subDeviceAddr.value <= 0) {
         error.value = '分机地址必须是大于0的正整数';
+        logger.error('发送失败: 分机地址错误');
         return;
       }
 
@@ -474,6 +480,7 @@ export default {
         commandToSend = generateCommand();
       } catch (err) {
         error.value = err.message;
+        logger.error(`生成命令失败: ${err.message}`);
         return;
       }
 
@@ -484,6 +491,7 @@ export default {
       const validation = validateHexData(commandToSend);
       if (!validation.valid) {
         error.value = validation.message;
+        logger.error(`发送失败: ${validation.message}`);
         return;
       }
 
@@ -492,6 +500,8 @@ export default {
       response.value = '';
       parsedData.value = [];
       headerInfo.value = null;
+
+      logger.info(`开始发送数据到 ${ipAddress.value}:${port.value}`);
 
       try {
         // 使用 Promise.race 实现超时控制
@@ -512,16 +522,21 @@ export default {
         if (result) {
           response.value = result;
           processResponse(result);
+          logger.info(`成功接收来自 ${ipAddress.value}:${port.value} 的响应数据`);
         }
       } catch (err) {
         if (err.message.includes('timeout') || err.message.includes('超时')) {
           error.value = '连接超时，请检查设备是否在线';
+          logger.error(`连接超时: ${ipAddress.value}:${port.value}`);
         } else if (err.message.includes('refused')) {
           error.value = '连接被拒绝，请检查IP地址和端口是否正确';
+          logger.error(`连接被拒绝: ${ipAddress.value}:${port.value}`);
         } else if (err.message.includes('network')) {
           error.value = '网络错误，请检查网络连接';
+          logger.error(`网络错误: ${err.message}`);
         } else {
           error.value = `发送数据失败: ${err.message}`;
+          logger.error(`发送数据失败: ${err.message}`);
         }
       } finally {
         isConnecting.value = false;
@@ -543,12 +558,14 @@ export default {
       const validation = validateHexData(processedData);
       if (!validation.valid) {
         error.value = validation.message;
+        logger.error(`解析失败: ${validation.message}`);
         return;
       }
       
       // 设置响应数据并进行解析
       response.value = processedData;
       processResponse(processedData);
+      logger.info('本地数据解析完成');
     };
 
     // 处理响应数据
@@ -558,6 +575,7 @@ export default {
       // 检查包头是否符合协议（aa b0）
       if (hexArray[0].toUpperCase() !== 'AA' || hexArray[1].toUpperCase() !== 'B0') {
         error.value = '接收数据格式错误，无效的包头';
+        logger.error('数据格式错误: 无效的包头');
         return;
       }
 
@@ -566,6 +584,8 @@ export default {
 
       // 解析温度数据
       parsedData.value = parseTemperatureData(hexArray, sensorConfig.value);
+      
+      logger.info(`解析完成，共 ${parsedData.value.length} 个测点，时间: ${headerInfo.value.dateTime}`);
     };
 
     return {

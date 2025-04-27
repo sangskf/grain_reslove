@@ -17,7 +17,12 @@ use crate::utils::hex_utils::{format_bytes_to_hex, hex_string_to_bytes};
 /// # 返回值
 ///
 /// 成功时返回响应的16进制字符串，失败时返回错误信息
-pub fn send_hex_data(ip: &str, port: u16, data: &str, timeout_ms: Option<u64>) -> Result<String, String> {
+pub fn send_hex_data(
+    ip: &str,
+    port: u16,
+    data: &str,
+    timeout_ms: Option<u64>,
+) -> Result<String, String> {
     // 将用户输入的16进制字符串转换为字节数组
     let hex_data = match hex_string_to_bytes(data) {
         Ok(bytes) => bytes,
@@ -27,8 +32,10 @@ pub fn send_hex_data(ip: &str, port: u16, data: &str, timeout_ms: Option<u64>) -
     // 连接到指定的IP和端口
     let address = format!("{}:{}", ip, port);
     let mut stream = match TcpStream::connect_timeout(
-        &address.parse().map_err(|e| format!("无效的地址格式: {}", e))?,
-        Duration::from_millis(timeout_ms.unwrap_or(10000))
+        &address
+            .parse()
+            .map_err(|e| format!("无效的地址格式: {}", e))?,
+        Duration::from_millis(timeout_ms.unwrap_or(10000)),
     ) {
         Ok(stream) => stream,
         Err(e) => {

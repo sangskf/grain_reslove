@@ -5,17 +5,23 @@
     <div class="log-controls">
       <div class="log-filter">
         <label for="log-level">日志级别:</label>
-        <select id="log-level" v-model="logLevel">
+        <select id="log-level" v-model="logLevel" @change="fetchLogs">
           <option value="all">全部</option>
-          <option value="info">信息</option>
-          <option value="warning">警告</option>
-          <option value="error">错误</option>
+          <option value="INFO">信息</option>
+          <option value="WARN">警告</option>
+          <option value="ERROR">错误</option>
         </select>
       </div>
       
       <div class="log-actions">
-        <button class="refresh-btn" @click="refreshLogs">刷新</button>
+        <button class="refresh-btn" @click="fetchLogs">刷新</button>
         <button class="clear-btn" @click="clearLogs">清空</button>
+        <div class="auto-refresh">
+          <label>
+            <input type="checkbox" v-model="autoRefresh">
+            自动刷新
+          </label>
+        </div>
       </div>
     </div>
     
@@ -25,7 +31,7 @@
       </div>
       
       <div v-else class="log-entries">
-        <div v-for="(log, index) in filteredLogs" :key="index" :class="['log-entry', `log-${log.level}`]">
+        <div v-for="(log, index) in logs" :key="index" :class="['log-entry', `log-${log.level.toLowerCase()}`]">
           <div class="log-time">{{ log.time }}</div>
           <div class="log-level-badge">{{ getLevelText(log.level) }}</div>
           <div class="log-message">{{ log.message }}</div>
@@ -36,57 +42,100 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
+import { getLogs, clearLogs } from '../utils/logger';
 
 export default {
   name: 'LogViewer',
   setup() {
     const logLevel = ref('all');
+    const logs = ref([]);
+    const loading = ref(false);
+    const error = ref(null);
+    const autoRefresh = ref(true);
+    let refreshInterval = null;
     
-    // Sample log data - in a real app, this would come from a backend service
-    const logs = ref([
-      { time: '2023-10-15 14:30:22', level: 'info', message: '应用启动成功' },
-      { time: '2023-10-15 14:35:10', level: 'info', message: '用户连接到 192.168.3.231:2000' },
-      { time: '2023-10-15 14:36:45', level: 'warning', message: '连接超时，正在重试...' },
-      { time: '2023-10-15 14:37:12', level: 'error', message: '连接失败: 无法访问目标地址' },
-      { time: '2023-10-15 14:40:05', level: 'info', message: '用户重新连接成功' },
-      { time: '2023-10-15 14:42:30', level: 'info', message: '数据解析完成，共处理 512 个测点' },
-    ]);
-    
-    const filteredLogs = computed(() => {
-      if (logLevel.value === 'all') {
-        return logs.value;
+    // 获取日志
+    const fetchLogs = async () => {
+      loading.value = true;
+      error.value = null;
+      
+      try {
+        const level = logLevel.value === 'all' ? null : logLevel.value;
+        logs.value = await getLogs(level, 200);
+      } catch (err) {
+        console.error('获取日志失败:', err);
+        error.value = err.toString();
+      } finally {
+        loading.value = false;
       }
-      return logs.value.filter(log => log.level === logLevel.value);
-    });
+    };
     
+    // 清空日志
+    const clearLogsHandler = async () => {
+      if (!confirm('确定要清空所有日志记录吗？')) {
+        return;
+      }
+      
+      try {
+        await clearLogs();
+        logs.value = [];
+      } catch (err) {
+        console.error('清空日志失败:', err);
+        error.value = err.toString();
+      }
+    };
+    
+    // 获取日志级别文本
     const getLevelText = (level) => {
       switch (level) {
-        case 'info': return '信息';
-        case 'warning': return '警告';
-        case 'error': return '错误';
+        case 'INFO': return '信息';
+        case 'WARN': return '警告';
+        case 'ERROR': return '错误';
         default: return level;
       }
     };
     
-    const refreshLogs = () => {
-      // In a real app, this would fetch new logs from the backend
-      console.log('刷新日志');
-    };
-    
-    const clearLogs = () => {
-      if (confirm('确定要清空所有日志记录吗？')) {
-        logs.value = [];
+    // 设置自动刷新
+    const setupAutoRefresh = () => {
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+      }
+      
+      if (autoRefresh.value) {
+        refreshInterval = setInterval(() => {
+          fetchLogs();
+        }, 5000); // 每5秒刷新一次
       }
     };
+    
+    // 监听自动刷新设置变化
+    watch(autoRefresh, () => {
+      setupAutoRefresh();
+    });
+    
+    // 组件挂载时获取日志
+    onMounted(() => {
+      fetchLogs();
+      setupAutoRefresh();
+    });
+    
+    // 组件卸载时清理定时器
+    onUnmounted(() => {
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+      }
+    });
     
     return {
       logLevel,
       logs,
-      filteredLogs,
-      getLevelText,
-      refreshLogs,
-      clearLogs
+      loading,
+      error,
+      autoRefresh,
+      fetchLogs,
+      clearLogs: clearLogsHandler,
+      getLevelText
     };
   }
 };
@@ -95,7 +144,7 @@ export default {
 <style scoped>
 .log-container {
   padding: 0 20px;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -141,6 +190,13 @@ h2 {
 .log-actions {
   display: flex;
   gap: 10px;
+  align-items: center;
+}
+
+.auto-refresh {
+  margin-left: 10px;
+  font-size: 0.85rem;
+  color: #555;
 }
 
 button {
@@ -199,7 +255,7 @@ button {
   align-items: center;
   padding: 8px 12px;
   border-bottom: 1px solid #f0f0f0;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   transition: background-color 0.1s;
 }
 
@@ -215,14 +271,14 @@ button {
   flex: 0 0 160px;
   font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
   color: #666;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 
 .log-level-badge {
   flex: 0 0 40px;
   padding: 2px 6px;
   border-radius: 3px;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   text-align: center;
   margin-right: 12px;
   font-weight: 500;
@@ -239,7 +295,7 @@ button {
   color: #0d47a1;
 }
 
-.log-warning .log-level-badge {
+.log-warn .log-level-badge {
   background-color: #fff8e1;
   color: #ff8f00;
 }
