@@ -131,10 +131,10 @@ import { ref, onMounted } from 'vue';
 
 // 默认配置
 const DEFAULT_CONFIG = {
-  defaultIp: '192.168.3.231',
+  defaultIp: '127.0.0.1',
   defaultPort: 2000,
   defaultSubDeviceAddr: 1,
-  timeout: 5000,
+  timeout: 10000,
   defaultLayers: 8,
   defaultRows: 8,
   defaultColumns: 8,

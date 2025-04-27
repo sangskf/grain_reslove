@@ -28,7 +28,7 @@ pub fn send_hex_data(ip: &str, port: u16, data: &str, timeout_ms: Option<u64>) -
     let address = format!("{}:{}", ip, port);
     let mut stream = match TcpStream::connect_timeout(
         &address.parse().map_err(|e| format!("无效的地址格式: {}", e))?,
-        Duration::from_millis(timeout_ms.unwrap_or(5000))
+        Duration::from_millis(timeout_ms.unwrap_or(10000))
     ) {
         Ok(stream) => stream,
         Err(e) => {
