@@ -14,6 +14,6 @@ pub fn greet(name: &str) -> String {
 ///
 /// 向指定IP和端口发送16进制数据，并返回响应
 #[tauri::command]
-pub fn send_hex_data(ip: &str, port: u16, data: &str) -> Result<String, String> {
-    network::send_hex_data(ip, port, data)
+pub fn send_hex_data(ip: &str, port: u16, data: &str, timeout_ms: Option<u64>) -> Result<String, String> {
+    network::send_hex_data(ip, port, data, timeout_ms)
 }
