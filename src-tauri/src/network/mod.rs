@@ -25,7 +25,7 @@ pub fn send_hex_data(
     timeout_ms: Option<u64>,
 ) -> Result<String, String> {
     debug!("网络模块: 开始处理发送请求 -> {}:{}", ip, port);
-    let actual_timeout = timeout_ms.unwrap_or(10000);
+    let actual_timeout = timeout_ms.unwrap_or(100000);
     debug!("网络模块: 使用超时时间: {}ms", actual_timeout);
     
     // 将用户输入的16进制字符串转换为字节数组

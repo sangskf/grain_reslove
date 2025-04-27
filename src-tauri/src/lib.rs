@@ -30,7 +30,7 @@ pub fn run() {
 
     // 生成日志文件名，按日期命名
     let today = Local::now().format("%Y-%m-%d").to_string();
-    let log_file_name = format!("app_{}.log", today);
+    let log_file_name = format!("app_{}", today);
     let log_file_path = log_dir.join(log_file_name);
     
     // 记录日志文件路径到全局变量，供logger模块使用

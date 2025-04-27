@@ -182,7 +182,7 @@ export default {
     const subDeviceAddr = ref(null);
     const hexData = ref('');
     const isConnecting = ref(false);
-    const timeout = ref(5000);
+    const timeout = ref(500000);
     
     // 命令时间相关
     const commandDateTime = ref('');
