@@ -59,6 +59,7 @@
 h2 {
   margin-top: 0;
   margin-bottom: 30px;
+  color: var(--text-color, #333);
 }
 
 .about-section {
@@ -69,7 +70,8 @@ h3 {
   font-size: 1.3rem;
   margin-bottom: 15px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--sidebar-border, #eee);
+  color: var(--text-color, #333);
 }
 
 .info-grid {
@@ -81,20 +83,21 @@ h3 {
 .info-item {
   display: flex;
   flex-direction: column;
-  background-color: #f8f8f8;
+  background-color: var(--sidebar-bg, #f8f8f8);
   border-radius: 8px;
   padding: 15px;
 }
 
 .info-label {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--version-color, #666);
   margin-bottom: 5px;
 }
 
 .info-value {
   font-size: 1.1rem;
   font-weight: 500;
+  color: var(--text-color, inherit);
 }
 
 .feature-list {
@@ -106,7 +109,7 @@ h3 {
 
 .feature-item {
   display: flex;
-  background-color: #f8f8f8;
+  background-color: var(--sidebar-bg, #f8f8f8);
   border-radius: 8px;
   padding: 20px;
 }
@@ -121,11 +124,13 @@ h3 {
 .feature-text h4 {
   margin: 0 0 10px 0;
   font-size: 1.1rem;
+  color: var(--text-color, inherit);
 }
 
 .feature-text p {
   margin: 0;
-  color: #555;
+  color: var(--text-color, #555);
+  opacity: 0.8;
 }
 
 .help-links {
@@ -140,7 +145,7 @@ h3 {
 
 .help-links a {
   display: inline-block;
-  color: #4CAF50;
+  color: var(--active-color, #4CAF50);
   text-decoration: none;
   padding: 8px 0;
   font-weight: 500;

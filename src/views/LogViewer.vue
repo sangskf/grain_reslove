@@ -152,7 +152,7 @@ export default {
 h2 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #333;
+  color: var(--text-color, #333);
   font-size: 1.5rem;
 }
 
@@ -161,7 +161,7 @@ h2 {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  background-color: #f3f3f3;
+  background-color: var(--sidebar-bg, #f3f3f3);
   padding: 12px 16px;
   border-radius: 6px;
 }
@@ -174,17 +174,17 @@ h2 {
 .log-filter label {
   margin-right: 10px;
   font-weight: 500;
-  color: #555;
+  color: var(--text-color, #555);
   font-size: 0.85rem;
 }
 
 .log-filter select {
   padding: 6px 12px;
   border-radius: 4px;
-  border: 1px solid #ddd;
-  background-color: white;
+  border: 1px solid var(--sidebar-border, #ddd);
+  background-color: var(--bg-color, white);
   font-size: 0.85rem;
-  color: #444;
+  color: var(--text-color, #444);
 }
 
 .log-actions {
@@ -196,7 +196,7 @@ h2 {
 .auto-refresh {
   margin-left: 10px;
   font-size: 0.85rem;
-  color: #555;
+  color: var(--text-color, #555);
 }
 
 button {
@@ -210,26 +210,28 @@ button {
 }
 
 .refresh-btn {
-  background-color: #4CAF50;
-  color: white;
+  background-color: var(--active-color, #4CAF50);
+  color: var(--active-text, white);
 }
 
 .refresh-btn:hover {
-  background-color: #45a049;
+  background-color: var(--active-color, #45a049);
+  opacity: 0.9;
 }
 
 .clear-btn {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: var(--sidebar-hover, #f0f0f0);
+  color: var(--text-color, #333);
 }
 
 .clear-btn:hover {
-  background-color: #e0e0e0;
+  background-color: var(--sidebar-hover, #e0e0e0);
+  opacity: 0.9;
 }
 
 .log-content {
-  background-color: #fcfcfc;
-  border: 1px solid #eaeaea;
+  background-color: var(--bg-color, #fcfcfc);
+  border: 1px solid var(--sidebar-border, #eaeaea);
   border-radius: 6px;
   height: 550px;
   overflow-y: auto;
@@ -241,7 +243,7 @@ button {
   justify-content: center;
   align-items: center;
   height: 100%;
-  color: #999;
+  color: var(--version-color, #999);
   font-style: italic;
   font-size: 0.9rem;
 }
@@ -254,13 +256,13 @@ button {
   display: flex;
   align-items: center;
   padding: 8px 12px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--sidebar-border, #f0f0f0);
   font-size: 0.8rem;
   transition: background-color 0.1s;
 }
 
 .log-entry:hover {
-  background-color: #f9f9f9;
+  background-color: var(--sidebar-hover, #f9f9f9);
 }
 
 .log-entry:last-child {
@@ -270,7 +272,7 @@ button {
 .log-time {
   flex: 0 0 160px;
   font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
-  color: #666;
+  color: var(--version-color, #666);
   font-size: 0.7rem;
 }
 
@@ -288,26 +290,29 @@ button {
   flex: 1;
   line-height: 1.4;
   word-break: break-word;
+  color: var(--text-color, inherit);
 }
 
+/* 针对不同级别日志的暗黑模式适配 */
 .log-info .log-level-badge {
-  background-color: #e3f2fd;
-  color: #0d47a1;
+  background-color: var(--info-badge-bg, #e3f2fd);
+  color: var(--info-badge-text, #0d47a1);
 }
 
 .log-warn .log-level-badge {
-  background-color: #fff8e1;
-  color: #ff8f00;
+  background-color: var(--warn-badge-bg, #fff8e1);
+  color: var(--warn-badge-text, #ff8f00);
 }
 
 .log-error .log-level-badge {
-  background-color: #ffebee;
-  color: #c62828;
+  background-color: var(--error-badge-bg, #ffebee);
+  color: var(--error-badge-text, #c62828);
 }
 
 /* Add subtle alternating row colors */
 .log-entry:nth-child(even) {
-  background-color: #fafafa;
+  background-color: var(--sidebar-bg, #fafafa);
+  opacity: 0.95;
 }
 
 /* Responsive adjustments */

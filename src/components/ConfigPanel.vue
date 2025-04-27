@@ -96,13 +96,14 @@ export default {
 .config-panel {
   margin-top: 20px;
   padding: 15px;
-  background-color: #f5f5f5;
+  background-color: var(--sidebar-bg, #f5f5f5);
   border-radius: 4px;
 }
 
 h3 {
   margin-top: 0;
   margin-bottom: 15px;
+  color: var(--text-color, inherit);
 }
 
 .config-items {
@@ -120,20 +121,24 @@ h3 {
 label {
   margin-bottom: 5px;
   font-weight: bold;
+  color: var(--text-color, inherit);
 }
 
 input {
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--sidebar-border, #ddd);
   border-radius: 4px;
   font-size: 14px;
+  background-color: var(--bg-color, white);
+  color: var(--text-color, inherit);
 }
 
 .config-info {
-  background-color: #e0e0e0;
+  background-color: var(--sidebar-hover, #e0e0e0);
   padding: 10px;
   border-radius: 4px;
   font-size: 14px;
+  color: var(--text-color, inherit);
 }
 
 .config-info p {

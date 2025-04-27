@@ -57,13 +57,14 @@ export default {
 .protocol-header {
   margin-top: 20px;
   padding: 15px;
-  background-color: #f5f5f5;
+  background-color: var(--sidebar-bg, #f5f5f5);
   border-radius: 4px;
 }
 
 h3 {
   margin-top: 0;
   margin-bottom: 10px;
+  color: var(--text-color, inherit);
 }
 
 table {
@@ -74,20 +75,22 @@ table {
 th, td {
   text-align: left;
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--sidebar-border, #ddd);
+  color: var(--text-color, inherit);
 }
 
 th {
-  background-color: #f0f0f0;
+  background-color: var(--sidebar-hover, #f0f0f0);
   font-weight: bold;
 }
 
 tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: var(--sidebar-bg, #f9f9f9);
+  opacity: 0.9;
 }
 
 .adjusted-length {
-  color: #e53935;
+  color: var(--error-badge-text, #e53935);
   font-weight: bold;
 }
 </style> 

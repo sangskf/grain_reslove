@@ -84,7 +84,7 @@ export default {
 .hex-display {
   margin-top: 20px;
   padding: 15px;
-  background-color: #f5f5f5;
+  background-color: var(--sidebar-bg, #f5f5f5);
   border-radius: 4px;
 }
 
@@ -97,12 +97,13 @@ export default {
 
 h3 {
   margin: 0;
+  color: var(--text-color, inherit);
 }
 
 .toggle-btn {
   padding: 4px 8px;
-  background-color: #4CAF50;
-  color: white;
+  background-color: var(--active-color, #4CAF50);
+  color: var(--active-text, white);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -111,13 +112,14 @@ h3 {
 }
 
 .toggle-btn:hover {
-  background-color: #45a049;
+  background-color: var(--active-color, #45a049);
+  opacity: 0.9;
 }
 
 .hex-data {
   font-family: monospace;
   white-space: pre-wrap;
-  background-color: #e0e0e0;
+  background-color: var(--sidebar-hover, #e0e0e0);
   padding: 10px;
   border-radius: 4px;
   overflow-x: auto;
@@ -125,7 +127,8 @@ h3 {
   max-height: 300px;
   overflow-y: auto;
   font-size: 14px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--sidebar-border, #ccc);
+  color: var(--text-color, inherit);
 }
 
 .hex-data::-webkit-scrollbar {
@@ -134,16 +137,17 @@ h3 {
 }
 
 .hex-data::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--sidebar-bg, #f1f1f1);
   border-radius: 4px;
 }
 
 .hex-data::-webkit-scrollbar-thumb {
-  background: #888;
+  background: var(--scrollbar-thumb, #888);
   border-radius: 4px;
 }
 
 .hex-data::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: var(--scrollbar-thumb, #555);
+  opacity: 0.9;
 }
 </style> 

@@ -426,7 +426,7 @@ export default {
         }
       } catch (error) {
         console.error('加载样例响应数据失败:', error);
-        localResponseData.value = 'AA B0 18 08 23 16 55 36 00 01 2F 01 E9 00 DB 00 FD 00 79 01 2F 01 DF 00 78 00 73 00 B9 00 33 01 FB 00 70 00 69 00 A9 00 33 01 E1 00 72 00 72 00 B6 00 2F 01 09 01 6A 00 63 00 95 00 3A 01 35 01 EC 00 16 01 1A 01 33 01 38 01 76 00 50 00 58 00 37 01 14 01 60 00 4B 00 9C 00 35 01 C4 00 54 00 5B 00 23 01 34 01 F6 00 89 00 7C 00 BB 00 25 01 2A 01 0A 01 08 01 3F 01 3E 01 3E 01 63 00 4B 00 74 00 35 01 33 01 63 00 4D 00 6F 00 2C 01 32 01 67 00 49 00 6D 00 35 01 33 01 DC 00 C9 00 CC 00 2D 01 34 01 A1 00 97 00 B1 00 33 01 27 01 6A 00 50 00 74 00 41 01 1E 01 60 00 50 00 81 00 35 01 D3 00 54 00 46 00 78 00 2C 01 F6 00 98 00 94 00 BC 00 3F 01 35 01 94 00 6B 00 79 00 37 01 36 01 6A 00 48 00 54 00 2A 01 2D 01 72 00 4F 00 60 00 34 01 3B 01 76 00 4C 00 60 00 3E 01 27 01 6E 00 51 00 5A 00 3B 01 44 01 3B 01 42 01 3E 01 40 01 3E 01 75 00 54 00 6C 00 39 01 45 01 74 00 52 00 64 00 38 01 35 01 37 01 3A 01 45 01 3D 01 2E 01 7B 00 5A 00 7C 00 32 01 3E 01 A2 00 74 00 79 00 29 01 33 01 90 00 50 00 57 00 29 01 32 01 80 00 4D 00 59 00 35 01 29 01 84 00 4B 00 59 00 42 01 36 01 73 00 4B 00 61 00 40 01 AA 00 8A 00 AA 00 75 01 42 01 DC 00 58 00 4E 00 74 00 3A 01 42 01 75 00 4E 00 52 00 2E 01 98 00 54 00 55 00 A7 00 31 01 2F 01 75 00 50 00 5A 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 3B 00 CA FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 19 00 FA FF FF FF FF FF FF FF FF FF 7A B7 EF EF';
+        localResponseData.value = 'AA B0 18 08 23 16 55 36 00 01 2F 01 E9 00 DB 00 FD 00 79 01 2F 01 DF 00 78 00 73 00 B9 00 33 01 FB 00 70 00 69 00 A9 00 33 01 E1 00 72 00 72 00 B6 00 2F 01 09 01 6A 00 63 00 95 00 3A 01 35 01 EC 00 16 01 1A 01 33 01 38 01 76 00 50 00 58 00 37 01 14 01 60 00 4B 00 9C 00 35 01 C4 00 54 00 5B 00 23 01 34 01 F6 00 89 00 7C 00 BB 00 25 01 2A 01 0A 01 08 01 3F 01 3E 01 3E 01 63 00 4B 00 74 00 35 01 33 01 63 00 4D 00 6F 00 2C 01 32 01 67 00 49 00 6D 00 35 01 33 01 DC 00 C9 00 CC 00 2D 01 34 01 A1 00 97 00 B1 00 33 01 27 01 6A 00 50 00 74 00 41 01 1E 01 60 00 50 00 81 00 35 01 D3 00 54 00 46 00 78 00 2C 01 F6 00 98 00 94 00 BC 00 3F 01 35 01 94 00 6B 00 79 00 37 01 36 01 6A 00 48 00 54 00 2A 01 2D 01 72 00 4F 00 60 00 34 01 3B 01 76 00 4C 00 60 00 3E 01 27 01 6E 00 51 00 5A 00 3B 01 44 01 3B 01 42 01 3E 01 40 01 3E 01 75 00 54 00 6C 00 39 01 45 01 74 00 52 00 64 00 38 01 35 01 37 01 3A 01 45 01 3D 01 2E 01 7B 00 5A 00 7C 00 32 01 3E 01 A2 00 74 00 79 00 29 01 33 01 90 00 50 00 57 00 29 01 32 01 80 00 4D 00 59 00 35 01 29 01 84 00 4B 00 59 00 42 01 36 01 73 00 4B 00 61 00 40 01 AA 00 8A 00 AA 00 75 01 42 01 DC 00 58 00 4E 00 74 00 3A 01 42 01 75 00 4E 00 52 00 2E 01 98 00 54 00 55 00 A7 00 31 01 2F 01 75 00 50 00 5A 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 3B 00 CA FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 19 00 FA FF FF FF FF FF FF FF FF FF 7A B7 EF EF';
       }
     };
 
@@ -656,29 +656,30 @@ export default {
 .tabs {
   display: flex;
   margin-bottom: 20px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--sidebar-border, #ddd);
 }
 
 .tabs button {
   padding: 10px 20px;
-  background-color: #f0f0f0;
+  background-color: var(--sidebar-hover, #f0f0f0);
   border: none;
   cursor: pointer;
   margin-right: 5px;
   border-radius: 4px 4px 0 0;
   font-weight: 500;
+  color: var(--text-color, #333);
 }
 
 .tabs button.active {
-  background-color: #4CAF50;
-  color: white;
+  background-color: var(--active-color, #4CAF50);
+  color: var(--active-text, white);
 }
 
 .connection-panel, .data-panel {
   margin-bottom: 10px;
   padding: 15px;
   border-radius: 8px;
-  background-color: #f8f8f8;
+  background-color: var(--sidebar-bg, #f8f8f8);
 }
 
 .connection-row, .time-row {
@@ -718,15 +719,16 @@ export default {
   width: 36px;
   padding: 0;
   font-size: 18px;
-  background-color: #4CAF50;
-  color: white;
+  background-color: var(--active-color, #4CAF50);
+  color: var(--active-text, white);
   border-radius: 50%;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .reset-time-btn:hover {
-  background-color: #4CAF50;
+  background-color: var(--active-color, #4CAF50);
+  opacity: 0.9;
 }
 
 .form-group {
@@ -738,15 +740,18 @@ label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
+  color: var(--text-color, inherit);
 }
 
 input, textarea, select {
   width: 100%;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--sidebar-border, #ccc);
   border-radius: 4px;
   font-family: monospace;
   box-sizing: border-box;
+  background-color: var(--bg-color, white);
+  color: var(--text-color, inherit);
 }
 
 .textarea-container {
@@ -769,13 +774,14 @@ input, textarea, select {
   margin-bottom: 0;
   font-weight: normal;
   font-size: 0.9rem;
-  color: #555;
+  color: var(--text-color, #555);
+  opacity: 0.9;
 }
 
 small {
   display: block;
   margin-top: 5px;
-  color: #666;
+  color: var(--version-color, #666);
 }
 
 .button-group {
@@ -794,18 +800,27 @@ button {
 }
 
 button.primary {
-  background-color: #4CAF50;
-  color: white;
+  background-color: var(--active-color, #4CAF50);
+  color: var(--active-text, white);
 }
 
 button.secondary {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: var(--sidebar-hover, #f0f0f0);
+  color: var(--text-color, #333);
+}
+
+button.primary:hover {
+  opacity: 0.9;
+}
+
+button.secondary:hover {
+  opacity: 0.9;
 }
 
 button:disabled {
-  background-color: #cccccc;
+  background-color: var(--sidebar-border, #cccccc);
   cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .status {
@@ -815,12 +830,13 @@ button:disabled {
 }
 
 .connecting {
-  background-color: #f0f0f0;
+  background-color: var(--sidebar-hover, #f0f0f0);
+  color: var(--text-color, inherit);
 }
 
 .error {
-  background-color: #ffebee;
-  color: #c62828;
+  background-color: var(--error-badge-bg, #ffebee);
+  color: var(--error-badge-text, #c62828);
 }
 
 /* 响应式布局 */

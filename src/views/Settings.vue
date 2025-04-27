@@ -216,19 +216,20 @@ export default {
 h2 {
   margin-top: 0;
   margin-bottom: 30px;
-  color: #333;
+  color: var(--text-color, #333);
 }
 
 h3 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #666;
+  color: var(--text-color, #666);
+  opacity: 0.8;
 }
 
 .settings-section {
   margin-bottom: 30px;
   padding: 20px;
-  background-color: #f8f8f8;
+  background-color: var(--sidebar-bg, #f8f8f8);
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -257,20 +258,22 @@ label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
-  color: #555;
+  color: var(--text-color, #555);
 }
 
 input, textarea {
   width: 100%;
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--sidebar-border, #ddd);
   border-radius: 4px;
   font-family: monospace;
   box-sizing: border-box;
+  background-color: var(--bg-color, #fff);
+  color: var(--text-color, #333);
 }
 
 input:focus, textarea:focus {
-  border-color: #4CAF50;
+  border-color: var(--active-color, #4CAF50);
   outline: none;
 }
 
@@ -291,25 +294,28 @@ button {
   border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
+  font-size: 14px;
   transition: background-color 0.3s;
 }
 
 button.primary {
-  background-color: #4CAF50;
-  color: white;
+  background-color: var(--active-color, #4CAF50);
+  color: var(--active-text, white);
 }
 
 button.primary:hover {
-  background-color: #45a049;
+  background-color: var(--active-color, #45a049);
+  opacity: 0.9;
 }
 
 button.secondary {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: var(--sidebar-hover, #f0f0f0);
+  color: var(--text-color, #333);
 }
 
 button.secondary:hover {
-  background-color: #e0e0e0;
+  background-color: var(--sidebar-hover, #e0e0e0);
+  opacity: 0.9;
 }
 
 .feature-text h4 {
@@ -319,7 +325,7 @@ button.secondary:hover {
 
 .feature-text p {
   margin: 0;
-  color: #555;
+  color: var(--text-color, #555);
 }
 
 .help-links li {
@@ -328,7 +334,7 @@ button.secondary:hover {
 
 .help-links a {
   display: inline-block;
-  color: #4CAF50;
+  color: var(--active-color, #4CAF50);
   text-decoration: none;
   padding: 8px 0;
   font-weight: 500;

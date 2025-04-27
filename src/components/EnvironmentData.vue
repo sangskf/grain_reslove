@@ -81,13 +81,14 @@ export default {
 .environment-data {
   margin-top: 20px;
   padding: 15px;
-  background-color: #f5f5f5;
+  background-color: var(--sidebar-bg, #f5f5f5);
   border-radius: 4px;
 }
 
 h3 {
   margin-top: 0;
   margin-bottom: 15px;
+  color: var(--text-color, inherit);
 }
 
 .env-grid {
@@ -97,7 +98,7 @@ h3 {
 
 .env-card {
   flex: 1;
-  background-color: white;
+  background-color: var(--bg-color, white);
   border-radius: 4px;
   padding: 15px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -108,15 +109,15 @@ h3 {
   font-size: 1.1em;
   margin-bottom: 10px;
   padding-bottom: 5px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--sidebar-border, #eee);
 }
 
 .indoor .env-title {
-  color: #2196F3;
+  color: var(--info-badge-text, #2196F3);
 }
 
 .outdoor .env-title {
-  color: #FF9800;
+  color: var(--warn-badge-text, #FF9800);
 }
 
 .env-values {
@@ -133,6 +134,7 @@ h3 {
 
 .label {
   font-weight: 500;
+  color: var(--text-color, inherit);
 }
 
 .value {
@@ -142,32 +144,32 @@ h3 {
 }
 
 .temp-very-high {
-  background-color: #ffcccc;
-  color: #cc0000;
+  background-color: var(--temp-very-high-bg, #ffcccc);
+  color: var(--temp-very-high-text, #cc0000);
 }
 
 .temp-high {
-  background-color: #fff0cc;
-  color: #cc6600;
+  background-color: var(--temp-high-bg, #fff0cc);
+  color: var(--temp-high-text, #cc6600);
 }
 
 .temp-normal {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+  background-color: var(--temp-normal-bg, #e8f5e9);
+  color: var(--temp-normal-text, #2e7d32);
 }
 
 .temp-low {
-  background-color: #e3f2fd;
-  color: #0d47a1;
+  background-color: var(--temp-low-bg, #e3f2fd);
+  color: var(--temp-low-text, #0d47a1);
 }
 
 .temp-very-low {
-  background-color: #e0f7fa;
-  color: #006064;
+  background-color: var(--temp-very-low-bg, #e0f7fa);
+  color: var(--temp-very-low-text, #006064);
 }
 
 .no-data {
-  color: #999;
+  color: var(--version-color, #999);
   font-style: italic;
   text-align: center;
   padding: 10px;
