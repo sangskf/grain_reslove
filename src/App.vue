@@ -4,12 +4,12 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <h1 class="sidebar-title">粮情数据解析</h1>
-        <div class="version-number">v1.0.0</div>
+        <div class="version-number">V{{ appVersion }}</div>
       </div>
       
       <nav class="sidebar-nav">
         <div class="nav-item" :class="{ 'active': currentPage === 'data' }" @click="currentPage = 'data'">
-          <span>数据解析</span>
+          <span>首页</span>
         </div>
         <div class="nav-item" :class="{ 'active': currentPage === 'settings' }" @click="currentPage = 'settings'">
           <span>配置</span>
@@ -42,6 +42,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { getVersion } from '@tauri-apps/api/app';
 import DataTransmitter from './views/DataTransmitter.vue';
 import LogViewer from './views/LogViewer.vue';
 import AboutPage from './views/AboutPage.vue';
@@ -49,9 +50,26 @@ import Settings from './views/Settings.vue';
 
 const currentPage = ref('data');
 const isDarkMode = ref(false);
+const appVersion = ref('0.0.0');
 
-// 从localStorage中获取主题偏好
-onMounted(() => {
+// 从Tauri获取应用版本
+const fetchAppVersion = async () => {
+  try {
+    const version = await getVersion();
+    appVersion.value = version;
+  } catch (error) {
+    console.error('获取应用版本失败:', error);
+    // 如果获取失败，使用默认版本
+    appVersion.value = '0.1.0';
+  }
+};
+
+// 组件挂载时
+onMounted(async () => {
+  // 获取应用版本
+  await fetchAppVersion();
+  
+  // 从localStorage中获取主题偏好
   const savedTheme = localStorage.getItem('theme');
   if (savedTheme === 'dark') {
     isDarkMode.value = true;
