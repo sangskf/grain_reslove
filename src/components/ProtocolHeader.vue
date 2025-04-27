@@ -2,37 +2,41 @@
   <div class="protocol-header">
     <h3>协议头部信息:</h3>
     <table>
-      <tr>
-        <th>字段</th>
-        <th>值</th>
-        <th>说明</th>
-      </tr>
-      <tr>
-        <td>包头</td>
-        <td>{{ headerInfo.header }}</td>
-        <td>固定为 AA B0</td>
-      </tr>
-      <tr>
-        <td>采集时间</td>
-        <td>{{ headerInfo.timestamp || '未解析' }}</td>
-        <td>数据采集的时间戳</td>
-      </tr>
-      <tr>
-        <td>分机地址</td>
-        <td>{{ headerInfo.deviceId }}</td>
-        <td>分机地址</td>
-      </tr>
-      <tr>
-        <td>原始数据长度</td>
-        <td>{{ headerInfo.rawDataLength }}</td>
-        <td>协议中的数据区字节长度</td>
-      </tr>
-      <tr>
-        <td>调整后数据长度</td>
-        <td>{{ headerInfo.dataLength }}</td>
-        <td v-if="headerInfo.dataLength === headerInfo.rawDataLength">数据区字节长度</td>
-        <td v-else class="adjusted-length">基于配置调整后的数据长度</td>
-      </tr>
+      <thead>
+        <tr>
+          <th>字段</th>
+          <th>值</th>
+          <th>说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>包头</td>
+          <td>{{ headerInfo.header }}</td>
+          <td>固定为 AA B0</td>
+        </tr>
+        <tr>
+          <td>采集时间</td>
+          <td>{{ headerInfo.timestamp || '未解析' }}</td>
+          <td>数据采集的时间戳</td>
+        </tr>
+        <tr>
+          <td>分机地址</td>
+          <td>{{ headerInfo.deviceId }}</td>
+          <td>分机地址</td>
+        </tr>
+        <tr>
+          <td>原始数据长度</td>
+          <td>{{ headerInfo.rawDataLength }}</td>
+          <td>协议中的数据区字节长度</td>
+        </tr>
+        <tr>
+          <td>调整后数据长度</td>
+          <td>{{ headerInfo.dataLength }}</td>
+          <td v-if="headerInfo.dataLength === headerInfo.rawDataLength">数据区字节长度</td>
+          <td v-else class="adjusted-length">基于配置调整后的数据长度</td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </template>

@@ -635,7 +635,7 @@ export default {
 }
 
 .connection-panel, .data-panel {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   padding: 15px;
   border-radius: 8px;
   background-color: #f8f8f8;

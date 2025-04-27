@@ -95,11 +95,16 @@ export default {
 <style scoped>
 .log-container {
   padding: 0 20px;
+  font-size: 0.7rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 h2 {
   margin-top: 0;
   margin-bottom: 20px;
+  color: #333;
+  font-size: 1.5rem;
 }
 
 .log-controls {
@@ -107,6 +112,9 @@ h2 {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  background-color: #f3f3f3;
+  padding: 12px 16px;
+  border-radius: 6px;
 }
 
 .log-filter {
@@ -116,12 +124,18 @@ h2 {
 
 .log-filter label {
   margin-right: 10px;
+  font-weight: 500;
+  color: #555;
+  font-size: 0.85rem;
 }
 
 .log-filter select {
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: 4px;
   border: 1px solid #ddd;
+  background-color: white;
+  font-size: 0.85rem;
+  color: #444;
 }
 
 .log-actions {
@@ -130,11 +144,13 @@ h2 {
 }
 
 button {
-  padding: 8px 15px;
+  padding: 7px 14px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.2s;
 }
 
 .refresh-btn {
@@ -142,16 +158,26 @@ button {
   color: white;
 }
 
+.refresh-btn:hover {
+  background-color: #45a049;
+}
+
 .clear-btn {
   background-color: #f0f0f0;
   color: #333;
 }
 
+.clear-btn:hover {
+  background-color: #e0e0e0;
+}
+
 .log-content {
-  background-color: #f8f8f8;
-  border-radius: 8px;
-  height: 500px;
+  background-color: #fcfcfc;
+  border: 1px solid #eaeaea;
+  border-radius: 6px;
+  height: 550px;
   overflow-y: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .empty-log {
@@ -161,17 +187,24 @@ button {
   height: 100%;
   color: #999;
   font-style: italic;
+  font-size: 0.9rem;
 }
 
 .log-entries {
-  padding: 10px;
+  padding: 8px;
 }
 
 .log-entry {
   display: flex;
   align-items: center;
-  padding: 8px 10px;
-  border-bottom: 1px solid #eee;
+  padding: 8px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.85rem;
+  transition: background-color 0.1s;
+}
+
+.log-entry:hover {
+  background-color: #f9f9f9;
 }
 
 .log-entry:last-child {
@@ -179,22 +212,26 @@ button {
 }
 
 .log-time {
-  flex: 0 0 180px;
-  font-family: monospace;
+  flex: 0 0 160px;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
   color: #666;
+  font-size: 0.8rem;
 }
 
 .log-level-badge {
-  flex: 0 0 50px;
+  flex: 0 0 40px;
   padding: 2px 6px;
   border-radius: 3px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-align: center;
-  margin-right: 10px;
+  margin-right: 12px;
+  font-weight: 500;
 }
 
 .log-message {
   flex: 1;
+  line-height: 1.4;
+  word-break: break-word;
 }
 
 .log-info .log-level-badge {
@@ -210,5 +247,27 @@ button {
 .log-error .log-level-badge {
   background-color: #ffebee;
   color: #c62828;
+}
+
+/* Add subtle alternating row colors */
+.log-entry:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .log-time {
+    flex: 0 0 120px;
+    font-size: 0.75rem;
+  }
+  
+  .log-level-badge {
+    flex: 0 0 35px;
+    font-size: 0.7rem;
+  }
+  
+  .log-container {
+    padding: 0 10px;
+  }
 }
 </style> 
