@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Local, FixedOffset, Utc};
 use log::{error, info, warn};
 use serde::{Deserialize, Serialize};
 use std::fs::{self, File, OpenOptions};
@@ -55,7 +55,11 @@ pub fn get_log_file_path() -> io::Result<PathBuf> {
         return Err(io::Error::new(io::ErrorKind::Other, "无法读取日志目录"));
     };
     
-    let today = Local::now().format("%Y-%m-%d").to_string();
+    // 创建东八区（北京时间）时区
+    let china_timezone = FixedOffset::east_opt(8 * 3600).unwrap_or(FixedOffset::east(8 * 3600));
+    // 获取当前UTC时间并转换为东八区时间
+    let now = Utc::now().with_timezone(&china_timezone);
+    let today = now.format("%Y-%m-%d").to_string();
     let file_name = format!("app_{}.log", today);
     Ok(PathBuf::from(&log_dir).join(file_name))
 }
@@ -88,7 +92,10 @@ pub fn append_to_log(level: &str, message: &str) -> io::Result<()> {
         .append(true)
         .open(log_path)?;
     
-    let now = Local::now();
+    // 创建东八区（北京时间）时区，偏移量为+8小时
+    let china_timezone = FixedOffset::east_opt(8 * 3600).unwrap_or(FixedOffset::east(8 * 3600));
+    // 获取当前UTC时间并转换为东八区时间
+    let now = Utc::now().with_timezone(&china_timezone);
     let formatted_time = now.format("%Y-%m-%d %H:%M:%S%.3f").to_string();
     
     let log_line = format!("{} [{}] {}\n", formatted_time, level, message);
@@ -135,12 +142,26 @@ pub fn read_logs(level_filter: Option<String>, limit: Option<usize>) -> io::Resu
         }
     }
     
+    // 创建东八区时区用于解析时间
+    let china_timezone = FixedOffset::east_opt(8 * 3600).unwrap_or(FixedOffset::east(8 * 3600));
+    
     // 按时间倒序排序
     entries.sort_by(|a, b| {
-        let a_time = DateTime::parse_from_str(&a.time, "%Y-%m-%d %H:%M:%S%.3f")
-            .unwrap_or_else(|_| DateTime::parse_from_rfc3339("1970-01-01T00:00:00Z").unwrap());
-        let b_time = DateTime::parse_from_str(&b.time, "%Y-%m-%d %H:%M:%S%.3f")
-            .unwrap_or_else(|_| DateTime::parse_from_rfc3339("1970-01-01T00:00:00Z").unwrap());
+        // 尝试解析时间为带有东八区时区的DateTime
+        let parse_time = |time_str: &str| -> DateTime<FixedOffset> {
+            match DateTime::parse_from_str(&format!("{} +0800", time_str), "%Y-%m-%d %H:%M:%S%.3f %z") {
+                Ok(dt) => dt,
+                Err(_) => {
+                    // 如果解析失败，使用默认时间
+                    Utc::now().with_timezone(&china_timezone)
+                }
+            }
+        };
+        
+        let a_time = parse_time(&a.time);
+        let b_time = parse_time(&b.time);
+        
+        // 倒序排序（新的在前）
         b_time.cmp(&a_time)
     });
     

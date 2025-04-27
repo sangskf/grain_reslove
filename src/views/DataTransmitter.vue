@@ -182,7 +182,7 @@ export default {
     const subDeviceAddr = ref(null);
     const hexData = ref('');
     const isConnecting = ref(false);
-    const timeout = ref(500000);
+    const timeout = ref(5000);
     
     // 命令时间相关
     const commandDateTime = ref('');
@@ -231,7 +231,7 @@ export default {
           ipAddress.value = config.defaultIp || '192.168.3.231';
           port.value = config.defaultPort || 2000;
           subDeviceAddr.value = config.defaultSubDeviceAddr || 1;
-          timeout.value = config.timeout || 5000;
+          timeout.value = parseInt(config.timeout) || 5000;
           
           // 加载传感器配置
           configLayers.value = config.defaultLayers || 8;
@@ -296,7 +296,7 @@ export default {
       ipAddress.value = newConfig.defaultIp;
       port.value = newConfig.defaultPort;
       subDeviceAddr.value = newConfig.defaultSubDeviceAddr;
-      timeout.value = newConfig.timeout;
+      timeout.value = parseInt(newConfig.timeout) || 5000;
       
       // 更新传感器配置
       configLayers.value = newConfig.defaultLayers;
@@ -422,11 +422,11 @@ export default {
         const savedConfig = localStorage.getItem('appConfig');
         if (savedConfig) {
           const config = JSON.parse(savedConfig);
-          localResponseData.value = config.sampleResponseData || 'AA B0 18 08 23 16 55 36 00 01 28 01 DF 00 D2 00 EF 00 73 01 27 01 D1 00 74 00 70 00 B7 00 2E 01 EE 00 6E 00 67 00 A5 00 2F 01 D4 00 70 00 70 00 B2 00 2B 01 FD 00 66 00 60 00 91 00 37 01 2C 01 E2 00 10 01 15 01 2E 01 35 01 73 00 4E 00 57 00 35 01 09 01 5E 00 4A 00 98 00 32 01 B8 00 53 00 59 00 1A 01 31 01 E8 00 82 00 76 00 B4 00';
+          localResponseData.value = config.sampleResponseData || 'AA B0 18 08 23 16 55 36 00 01 2F 01 E9 00 DB 00 FD 00 79 01 2F 01 DF 00 78 00 73 00 B9 00 33 01 FB 00 70 00 69 00 A9 00 33 01 E1 00 72 00 72 00 B6 00 2F 01 09 01 6A 00 63 00 95 00 3A 01 35 01 EC 00 16 01 1A 01 33 01 38 01 76 00 50 00 58 00 37 01 14 01 60 00 4B 00 9C 00 35 01 C4 00 54 00 5B 00 23 01 34 01 F6 00 89 00 7C 00 BB 00 25 01 2A 01 0A 01 08 01 3F 01 3E 01 3E 01 63 00 4B 00 74 00 35 01 33 01 63 00 4D 00 6F 00 2C 01 32 01 67 00 49 00 6D 00 35 01 33 01 DC 00 C9 00 CC 00 2D 01 34 01 A1 00 97 00 B1 00 33 01 27 01 6A 00 50 00 74 00 41 01 1E 01 60 00 50 00 81 00 35 01 D3 00 54 00 46 00 78 00 2C 01 F6 00 98 00 94 00 BC 00 3F 01 35 01 94 00 6B 00 79 00 37 01 36 01 6A 00 48 00 54 00 2A 01 2D 01 72 00 4F 00 60 00 34 01 3B 01 76 00 4C 00 60 00 3E 01 27 01 6E 00 51 00 5A 00 3B 01 44 01 3B 01 42 01 3E 01 40 01 3E 01 75 00 54 00 6C 00 39 01 45 01 74 00 52 00 64 00 38 01 35 01 37 01 3A 01 45 01 3D 01 2E 01 7B 00 5A 00 7C 00 32 01 3E 01 A2 00 74 00 79 00 29 01 33 01 90 00 50 00 57 00 29 01 32 01 80 00 4D 00 59 00 35 01 29 01 84 00 4B 00 59 00 42 01 36 01 73 00 4B 00 61 00 40 01 AA 00 8A 00 AA 00 75 01 42 01 DC 00 58 00 4E 00 74 00 3A 01 42 01 75 00 4E 00 52 00 2E 01 98 00 54 00 55 00 A7 00 31 01 2F 01 75 00 50 00 5A 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 3B 00 CA FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 19 00 FA FF FF FF FF FF FF FF FF FF 7A B7 EF EF';
         }
       } catch (error) {
         console.error('加载样例响应数据失败:', error);
-        localResponseData.value = 'AA B0 18 08 23 16 55 36 00 01 28 01 DF 00 D2 00 EF 00 73 01 27 01 D1 00 74 00 70 00 B7 00 2E 01 EE 00 6E 00 67 00 A5 00 2F 01 D4 00 70 00 70 00 B2 00 2B 01 FD 00 66 00 60 00 91 00 37 01 2C 01 E2 00 10 01 15 01 2E 01 35 01 73 00 4E 00 57 00 35 01 09 01 5E 00 4A 00 98 00 32 01 B8 00 53 00 59 00 1A 01 31 01 E8 00 82 00 76 00 B4 00';
+        localResponseData.value = 'AA B0 18 08 23 16 55 36 00 01 2F 01 E9 00 DB 00 FD 00 79 01 2F 01 DF 00 78 00 73 00 B9 00 33 01 FB 00 70 00 69 00 A9 00 33 01 E1 00 72 00 72 00 B6 00 2F 01 09 01 6A 00 63 00 95 00 3A 01 35 01 EC 00 16 01 1A 01 33 01 38 01 76 00 50 00 58 00 37 01 14 01 60 00 4B 00 9C 00 35 01 C4 00 54 00 5B 00 23 01 34 01 F6 00 89 00 7C 00 BB 00 25 01 2A 01 0A 01 08 01 3F 01 3E 01 3E 01 63 00 4B 00 74 00 35 01 33 01 63 00 4D 00 6F 00 2C 01 32 01 67 00 49 00 6D 00 35 01 33 01 DC 00 C9 00 CC 00 2D 01 34 01 A1 00 97 00 B1 00 33 01 27 01 6A 00 50 00 74 00 41 01 1E 01 60 00 50 00 81 00 35 01 D3 00 54 00 46 00 78 00 2C 01 F6 00 98 00 94 00 BC 00 3F 01 35 01 94 00 6B 00 79 00 37 01 36 01 6A 00 48 00 54 00 2A 01 2D 01 72 00 4F 00 60 00 34 01 3B 01 76 00 4C 00 60 00 3E 01 27 01 6E 00 51 00 5A 00 3B 01 44 01 3B 01 42 01 3E 01 40 01 3E 01 75 00 54 00 6C 00 39 01 45 01 74 00 52 00 64 00 38 01 35 01 37 01 3A 01 45 01 3D 01 2E 01 7B 00 5A 00 7C 00 32 01 3E 01 A2 00 74 00 79 00 29 01 33 01 90 00 50 00 57 00 29 01 32 01 80 00 4D 00 59 00 35 01 29 01 84 00 4B 00 59 00 42 01 36 01 73 00 4B 00 61 00 40 01 AA 00 8A 00 AA 00 75 01 42 01 DC 00 58 00 4E 00 74 00 3A 01 42 01 75 00 4E 00 52 00 2E 01 98 00 54 00 55 00 A7 00 31 01 2F 01 75 00 50 00 5A 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 3B 00 CA FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 19 00 FA FF FF FF FF FF FF FF FF FF 7A B7 EF EF';
       }
     };
 
@@ -506,7 +506,7 @@ export default {
       try {
         // 使用 Promise.race 实现超时控制
         const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('连接超时，请检查设备是否在线')), timeout.value);
+          setTimeout(() => reject(new Error('连接超时，请检查设备是否在线')), parseInt(timeout.value));
         });
 
         // 发送16进制数据并接收响应
@@ -514,11 +514,12 @@ export default {
           ip: ipAddress.value,
           port: parseInt(port.value),
           data: commandToSend,
-          timeout_ms: timeout.value
+          timeout_ms: parseInt(timeout.value)
         });
 
         const result = await Promise.race([sendPromise, timeoutPromise]);
 
+        console.log("后端返回的数据", result)
         if (result) {
           response.value = result;
           processResponse(result);
@@ -538,6 +539,7 @@ export default {
           error.value = `发送数据失败: ${err.message}`;
           logger.error(`发送数据失败: ${err.message}`);
         }
+        console.error('发送数据失败:', err);
       } finally {
         isConnecting.value = false;
       }
@@ -570,7 +572,24 @@ export default {
 
     // 处理响应数据
     const processResponse = (hexResponse) => {
-      const hexArray = hexResponse.split(/\s+/);
+      // 处理可能返回的小写并且没有正确空格分隔的16进制字符串
+      // Rust端返回的是全部小写且紧凑的hexString (如 "aab0...")
+      let processedHexResponse = hexResponse;
+      
+      // 检查是否为紧凑型小写16进制字符串（无空格）
+      if (!hexResponse.includes(" ") && /^[0-9a-f]+$/.test(hexResponse)) {
+        // 将每两个字符转换为一个16进制值并添加空格
+        const hexArray = [];
+        for (let i = 0; i < hexResponse.length; i += 2) {
+          if (i + 2 <= hexResponse.length) {
+            hexArray.push(hexResponse.substring(i, i + 2).toUpperCase());
+          }
+        }
+        processedHexResponse = hexArray.join(" ");
+        logger.info(`检测到紧凑型16进制字符串，已转换为空格分隔的格式: ${processedHexResponse.substring(0, 30)}...`);
+      }
+
+      const hexArray = processedHexResponse.split(/\s+/);
 
       // 检查包头是否符合协议（aa b0）
       if (hexArray[0].toUpperCase() !== 'AA' || hexArray[1].toUpperCase() !== 'B0') {
@@ -585,7 +604,7 @@ export default {
       // 解析温度数据
       parsedData.value = parseTemperatureData(hexArray, sensorConfig.value);
       
-      logger.info(`解析完成，共 ${parsedData.value.length} 个测点，时间: ${headerInfo.value.dateTime}`);
+      logger.info(`解析完成，共 ${parsedData.value.length} 个测点，时间: ${headerInfo.value?.timestamp || '未知'}`);
     };
 
     return {

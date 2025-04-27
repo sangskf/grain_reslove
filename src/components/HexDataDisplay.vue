@@ -32,13 +32,39 @@ export default {
     const formattedHexData = computed(() => {
       if (!props.hexData) return '';
       
-      const hexArray = props.hexData.trim().split(/\s+/);
+      // 检查是否为紧凑型16进制字符串（无空格）
+      let hexString = props.hexData;
+      if (!hexString.includes(" ") && /^[0-9a-f]+$/.test(hexString)) {
+        // 将每两个字符转换为一个16进制值并添加空格
+        const hexArray = [];
+        for (let i = 0; i < hexString.length; i += 2) {
+          if (i + 2 <= hexString.length) {
+            hexArray.push(hexString.substring(i, i + 2));
+          }
+        }
+        hexString = hexArray.join(" ");
+      }
+      
+      const hexArray = hexString.trim().split(/\s+/);
       let formattedHex = '';
+      let byteCounter = 0;
       
       for (let i = 0; i < hexArray.length; i++) {
-        formattedHex += hexArray[i] + ' ';
-        if ((i + 1) % 16 === 0) {
+        // 添加字节位置标识
+        if (byteCounter % 16 === 0) {
+          formattedHex += `${byteCounter.toString(16).padStart(4, '0')}: `;
+        }
+        
+        formattedHex += hexArray[i].toUpperCase() + ' ';
+        byteCounter++;
+        
+        // 每16个字节后添加换行
+        if (byteCounter % 16 === 0) {
           formattedHex += '\n';
+        }
+        // 每8个字节添加额外的空格以增加可读性
+        else if (byteCounter % 8 === 0) {
+          formattedHex += ' ';
         }
       }
       

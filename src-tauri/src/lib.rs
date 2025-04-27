@@ -9,7 +9,7 @@ mod logger;
 // 使用commands模块中的命令
 use commands::{send_hex_data, get_logs, add_log, clear_logs};
 use tauri_plugin_log::{Target, TargetKind};
-use chrono::Local;
+use chrono::{Local, FixedOffset, Utc};
 use log::{info, LevelFilter};
 use std::path::PathBuf;
 use std::fs;
@@ -28,8 +28,12 @@ pub fn run() {
         }
     }
 
+    // 创建东八区（北京时间）时区
+    let china_timezone = FixedOffset::east_opt(8 * 3600).unwrap_or(FixedOffset::east(8 * 3600));
+    // 获取当前时间并转换为东八区时间
+    let now = Utc::now().with_timezone(&china_timezone);
     // 生成日志文件名，按日期命名
-    let today = Local::now().format("%Y-%m-%d").to_string();
+    let today = now.format("%Y-%m-%d").to_string();
     let log_file_name = format!("app_{}", today);
     let log_file_path = log_dir.join(log_file_name);
     

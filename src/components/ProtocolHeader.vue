@@ -12,7 +12,7 @@
       <tbody>
         <tr>
           <td>包头</td>
-          <td>{{ headerInfo.header }}</td>
+          <td>{{ headerInfo.header || 'AA B0' }}</td>
           <td>固定为 AA B0</td>
         </tr>
         <tr>
@@ -22,17 +22,17 @@
         </tr>
         <tr>
           <td>分机地址</td>
-          <td>{{ headerInfo.deviceId }}</td>
+          <td>{{ headerInfo.deviceId !== null ? headerInfo.deviceId : '未知' }}</td>
           <td>分机地址</td>
         </tr>
         <tr>
           <td>原始数据长度</td>
-          <td>{{ headerInfo.rawDataLength }}</td>
+          <td>{{ headerInfo.rawDataLength || 0 }}</td>
           <td>协议中的数据区字节长度</td>
         </tr>
         <tr>
           <td>调整后数据长度</td>
-          <td>{{ headerInfo.dataLength }}</td>
+          <td>{{ headerInfo.dataLength || 0 }}</td>
           <td v-if="headerInfo.dataLength === headerInfo.rawDataLength">数据区字节长度</td>
           <td v-else class="adjusted-length">基于配置调整后的数据长度</td>
         </tr>
