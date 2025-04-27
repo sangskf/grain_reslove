@@ -1,6 +1,6 @@
 <template>
   <div class="config-panel">
-    <h3>传感器配置:</h3>
+    <h3>行列层配置:</h3>
     <div class="config-items">
       <div class="config-item">
         <label for="layers">层数:</label>

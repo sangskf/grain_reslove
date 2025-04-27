@@ -11,6 +11,9 @@
         <div class="nav-item" :class="{ 'active': currentPage === 'data' }" @click="currentPage = 'data'">
           <span>数据解析</span>
         </div>
+        <div class="nav-item" :class="{ 'active': currentPage === 'settings' }" @click="currentPage = 'settings'">
+          <span>配置</span>
+        </div>
         <div class="nav-item" :class="{ 'active': currentPage === 'log' }" @click="currentPage = 'log'">
           <span>日志</span>
         </div>
@@ -27,6 +30,7 @@
       <DataTransmitter v-if="currentPage === 'data'" />
       <LogViewer v-if="currentPage === 'log'" />
       <AboutPage v-if="currentPage === 'about'" />
+      <Settings v-if="currentPage === 'settings'" />
     </main>
   </div>
 </template>
@@ -36,6 +40,7 @@ import { ref } from 'vue';
 import DataTransmitter from './views/DataTransmitter.vue';
 import LogViewer from './views/LogViewer.vue';
 import AboutPage from './views/AboutPage.vue';
+import Settings from './views/Settings.vue';
 
 const currentPage = ref('data');
 </script>
