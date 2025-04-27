@@ -36,7 +36,7 @@ export default {
     // 将温度数据按每行5个分组
     temperatureChunks() {
       const chunks = [];
-      const itemsPerRow = 5;
+      const itemsPerRow = 4;
       
       for (let i = 0; i < this.temperatures.length; i += itemsPerRow) {
         chunks.push(this.temperatures.slice(i, i + itemsPerRow));

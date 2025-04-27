@@ -77,12 +77,18 @@
       <div class="data-panel">
         <div class="form-group">
           <label for="hexData">16进制发送数据:</label>
-          <textarea
-              id="hexData"
-              v-model="hexData"
-              placeholder="输入16进制数据，例如: AA A0 18 08 23 16 55 36 00 01 A0 01 FF FF FF FF FF FF FF FF FF FF FF FF FF C3 EF EF"
-              rows="3"
-          ></textarea>
+          <div class="textarea-container">
+            <textarea
+                id="hexData"
+                v-model="hexData"
+                placeholder="输入16进制数据，例如: AA A0 18 08 23 16 55 36 00 01 A0 01 FF FF FF FF FF FF FF FF FF FF FF FF FF C3 EF EF"
+                rows="3"
+            ></textarea>
+            <div class="checkbox-container">
+              <input type="checkbox" id="convertToUppercase" v-model="convertToUppercase">
+              <label for="convertToUppercase">自动转换为大写</label>
+            </div>
+          </div>
           <small>格式: 使用空格分隔每个16进制值</small>
         </div>
 
@@ -101,12 +107,18 @@
       <div class="data-panel">
         <div class="form-group">
           <label for="responseData">16进制响应数据:</label>
-          <textarea
-              id="responseData"
-              v-model="localResponseData"
-              placeholder="输入要解析的16进制数据，例如: AA B0 18 08 23 16 55 36 00 01 28 01 DF 00 D2 00 EF 00 73 01..."
-              rows="5"
-          ></textarea>
+          <div class="textarea-container">
+            <textarea
+                id="responseData"
+                v-model="localResponseData"
+                placeholder="输入要解析的16进制数据，例如: AA B0 18 08 23 16 55 36 00 01 28 01 DF 00 D2 00 EF 00 73 01..."
+                rows="5"
+            ></textarea>
+            <div class="checkbox-container">
+              <input type="checkbox" id="convertToUppercaseLocal" v-model="convertToUppercase">
+              <label for="convertToUppercaseLocal">自动转换为大写</label>
+            </div>
+          </div>
           <small>格式: 使用空格分隔每个16进制值，必须符合协议格式（AA B0开头）</small>
         </div>
 
@@ -158,10 +170,13 @@ export default {
     // 选项卡切换
     const activeTab = ref('send');
     
+    // 是否将十六进制值转换为大写
+    const convertToUppercase = ref(true);
+    
     // 发送数据相关
     const ipAddress = ref('192.168.3.231');
     const port = ref(2000);
-    const subDeviceAddr = ref(2); // 默认分机地址为2
+    const subDeviceAddr = ref(1); // 默认分机地址为1
     const hexData = ref('AA A0 18 08 23 16 55 36 00 01 A0 01 FF FF FF FF FF FF FF FF FF FF FF FF FF C3 EF EF');
     const isConnecting = ref(false);
     
@@ -318,7 +333,7 @@ export default {
     
     // 加载示例的16进制响应数据
     const loadSampleResponse = () => {
-      localResponseData.value = 'AA B0 18 08 23 16 55 36 00 01 28 01 DF 00 D2 00 EF 00 73 01 27 01 D1 00 74 00 70 00 B7 00 2E 01 EE 00 6E 00 67 00 A5 00 2F 01 D4 00 70 00 70 00 B2 00 2B 01 FD 00 66 00 60 00 91 00 37 01 2C 01 E2 00 10 01 15 01 2E 01 35 01 73 00 4E 00 57 00 35 01 09 01 5E 00 4A 00 98 00 32 01 B8 00 53 00 59 00 1A 01 31 01 E8 00 82 00 76 00 B4 00 1D 01 23 01 FD 00 FE 00 2A 01 3C 01 3C 01 61 00 4B 00 72 00 31 01 2F 01 60 00 4C 00 6E 00 26 01 2D 01 63 00 49 00 6A 00 32 01 2F 01 CE 00 BF 00 C3 00 27 01 2F 01 9C 00 93 00 AB 00 2E 01 1F 01 68 00 50 00 73 00 40 01 15 01 5F 00 50 00 80 00 32 01 C6 00 53 00 46 00 76 00 27 01 E9 00 91 00 8C 00 B4 00 3E 01 30 01 8E 00 68 00 76 00 33 01 32 01 66 00 48 00 53 00 23 01 28 01 6E 00 4E 00 5F 00 30 01 3A 01 71 00 4B 00 5E 00 3D 01 21 01 6B 00 4F 00 58 00 38 01 44 01 38 01 41 01 3B 01 40 01 3B 01 72 00 54 00 6A 00 36 01 45 01 70 00 52 00 63 00 36 01 32 01 35 01 38 01 47 01 3C 01 29 01 76 00 58 00 78 00 2D 01 3C 01 9A 00 70 00 74 00 21 01 2D 01 89 00 4F 00 57 00 22 01 2E 01 7B 00 4D 00 58 00 32 01 21 01 7E 00 4B 00 59 00 43 01 33 01 6F 00 4B 00 5F 00 3F 01 A0 00 85 00 A2 00 64 01 43 01 CE 00 56 00 4E 00 73 00 38 01 43 01 70 00 4D 00 51 00 2A 01 90 00 52 00 53 00 A5 00 2E 01 2B 01 70 00 4E 00 59 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 3A 00 CB FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 4C 00 C3 FF FF FF FF FF FF FF FF FF 3B AA EF EF';
+      localResponseData.value = 'AA B0 18 08 23 16 55 36 00 01 28 01 DF 00 D2 00 EF 00 73 01 27 01 D1 00 74 00 70 00 B7 00 2E 01 EE 00 6E 00 67 00 A5 00 2F 01 D4 00 70 00 70 00 B2 00 2B 01 FD 00 66 00 60 00 91 00 37 01 2C 01 E2 00 10 01 15 01 2E 01 35 01 73 00 4E 00 57 00 35 01 09 01 5E 00 4A 00 98 00 32 01 B8 00 53 00 59 00 1A 01 31 01 E8 00 82 00 76 00 B4 00 1D 01 23 01 FD 00 FE 00 2A 01 3C 01 3C 01 61 00 4B 00 72 00 31 01 2F 01 60 00 4C 00 6E 00 26 01 2D 01 63 00 49 00 6A 00 32 01 2F 01 CE 00 BF 00 C3 00 27 01 2F 01 9C 00 93 00 AB 00 2E 01 1F 01 68 00 50 00 73 00 40 01 15 01 5F 00 50 00 80 00 32 01 C6 00 53 00 46 00 76 00 27 01 E9 00 91 00 8C 00 B4 00 3E 01 30 01 8E 00 68 00 76 00 33 01 32 01 66 00 48 00 53 00 23 01 28 01 6E 00 4E 00 5F 00 30 01 3A 01 71 00 4B 00 5E 00 3D 01 21 01 6B 00 4F 00 58 00 38 01 44 01 38 01 41 01 3B 01 40 01 3B 01 72 00 54 00 6A 00 36 01 45 01 70 00 52 00 63 00 36 01 32 01 35 01 38 01 47 01 3C 01 29 01 76 00 58 00 78 00 2D 01 3C 01 9A 00 70 00 74 00 21 01 2D 01 89 00 4F 00 57 00 22 01 2E 01 7B 00 4D 00 58 00 32 01 21 01 7E 00 4B 00 59 00 43 01 33 01 6F 00 4B 00 5F 00 3F 01 A0 00 85 00 A2 00 64 01 43 01 CE 00 56 00 4E 00 73 00 38 01 43 01 70 00 4D 00 51 00 2A 01 90 00 52 00 53 00 A5 00 2E 01 2B 01 70 00 4E 00 59 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 3A 00 CB FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 4C 00 C3 FF FF FF FF FF FF FF FF FF 3B AA EF EF';
     };
 
     // 验证16进制数据格式
@@ -342,6 +357,14 @@ export default {
       return { valid: true };
     };
 
+    // 如果需要，将十六进制数据转换为大写
+    const convertHexToUppercaseIfNeeded = (hexData) => {
+      if (convertToUppercase.value) {
+        return hexData.toUpperCase();
+      }
+      return hexData;
+    };
+
     // 发送数据并接收响应
     const sendData = async () => {
       if (!ipAddress.value || !port.value) {
@@ -363,6 +386,9 @@ export default {
         error.value = err.message;
         return;
       }
+
+      // 转换为大写（如果选项启用）
+      commandToSend = convertHexToUppercaseIfNeeded(commandToSend);
 
       // 验证16进制数据
       const validation = validateHexData(commandToSend);
@@ -404,16 +430,19 @@ export default {
       parsedData.value = [];
       headerInfo.value = null;
       
+      // 转换为大写（如果选项启用）
+      const processedData = convertHexToUppercaseIfNeeded(localResponseData.value);
+      
       // 验证16进制数据
-      const validation = validateHexData(localResponseData.value);
+      const validation = validateHexData(processedData);
       if (!validation.valid) {
         error.value = validation.message;
         return;
       }
       
       // 设置响应数据并进行解析
-      response.value = localResponseData.value;
-      processResponse(localResponseData.value);
+      response.value = processedData;
+      processResponse(processedData);
     };
 
     // 处理响应数据
@@ -421,7 +450,7 @@ export default {
       const hexArray = hexResponse.split(/\s+/);
 
       // 检查包头是否符合协议（aa b0）
-      if (hexArray[0] !== 'AA' || hexArray[1] !== 'B0') {
+      if (hexArray[0].toUpperCase() !== 'AA' || hexArray[1].toUpperCase() !== 'B0') {
         error.value = '接收数据格式错误，无效的包头';
         return;
       }
@@ -437,8 +466,8 @@ export default {
       activeTab,
       ipAddress,
       port,
-      subDeviceAddr, // 导出分机地址
-      commandDateTime, // 导出命令时间
+      subDeviceAddr,
+      commandDateTime,
       hexData,
       localResponseData,
       isConnecting,
@@ -447,13 +476,13 @@ export default {
       parsedData,
       headerInfo,
       environmentData,
+      convertToUppercase,
       loadDefaultData,
       loadSampleResponse,
       sendData,
       parseLocalData,
-      updateCommandWithTime, // 导出更新时间函数
-      resetToCurrentTime, // 导出重置时间函数
-      // 配置相关
+      updateCommandWithTime,
+      resetToCurrentTime,
       configLayers,
       configRows,
       configColumns,
@@ -502,6 +531,7 @@ export default {
   display: flex;
   gap: 20px;
   margin-bottom: 10px;
+  align-items: flex-start;
 }
 
 .ip-field {
@@ -547,6 +577,7 @@ export default {
 
 .form-group {
   margin-bottom: 15px;
+  width: 100%;
 }
 
 label {
@@ -555,12 +586,36 @@ label {
   font-weight: bold;
 }
 
-input, textarea {
+input, textarea, select {
   width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-family: monospace;
+  box-sizing: border-box;
+}
+
+.textarea-container {
+  position: relative;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.checkbox-container input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+}
+
+.checkbox-container label {
+  display: inline;
+  margin-bottom: 0;
+  font-weight: normal;
+  font-size: 0.9rem;
+  color: #555;
 }
 
 small {
