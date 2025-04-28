@@ -12,7 +12,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-22.04, windows-latest]
+        platform: [macos-latest, windows-latest]
+        include:
+          - platform: ubuntu-latest
+            rust-toolchain: stable
+            rust-target: x86_64-unknown-linux-msvc
+          - platform: macos-latest
+            rust-toolchain: stable
+            rust-target: x86_64-apple-darwin
+          - platform: windows-latest
+            rust-toolchain: stable
+            rust-target: x86_64-pc-windows-msvc
     runs-on: ${{ matrix.platform }}
 
     steps:
@@ -64,4 +74,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # artifactPaths: ${{ steps.build.outputs.artifactPaths }}
-        run: pnpm updater
+#        run: pnpm updater
