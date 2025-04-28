@@ -147,7 +147,7 @@ pub fn read_logs(level_filter: Option<String>, limit: Option<usize>) -> io::Resu
                     match Local.from_local_datetime(&dt).single() {
                         Some(local_dt) => local_dt,
                         None => Local::now()
-                    }
+                }
                 },
                 Err(_) => Local::now()
             }
