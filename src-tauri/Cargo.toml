@@ -1,6 +1,6 @@
 [package]
 name = "grain_reslove"
-version = "0.1.5"
+version = "0.1.6"
 description = "粮情解析"
 authors = ["sangkf"]
 edition = "2021"
