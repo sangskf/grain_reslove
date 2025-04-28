@@ -1,7 +1,7 @@
 use std::fs::{self, OpenOptions, File};
 use std::io::Write;
 use std::path::PathBuf;
-use chrono::{DateTime, Local, Utc};
+use chrono::{DateTime, Local};
 use std::backtrace::Backtrace;
 use std::panic;
 use log::error;
@@ -19,7 +19,7 @@ pub fn get_crash_log_dir() -> PathBuf {
     // 如果无法获取普通日志目录，则使用默认路径
     let base_dir = dirs::data_local_dir()
         .unwrap_or_else(|| std::env::temp_dir())
-        .join("grain_reslove")
+        .join("GrainResolve")
         .join("logs");
     base_dir
 }
@@ -38,7 +38,8 @@ pub fn init_crash_handler() {
     // 设置panic处理器
     panic::set_hook(Box::new(move |panic_info| {
         let backtrace = Backtrace::capture();
-        let current_time = Utc::now().with_timezone(&Local);
+        // 直接使用本地时间
+        let current_time = Local::now();
         let formatted_time = current_time.format("%Y-%m-%d_%H-%M-%S").to_string();
         
         let crash_file_path = crash_dir.join(format!("crash_{}.log", formatted_time));
@@ -50,7 +51,7 @@ pub fn init_crash_handler() {
             .open(&crash_file_path)
         {
             // 写入崩溃时间
-            let _ = writeln!(file, "崩溃时间: {}", current_time.format("%Y-%m-%d %H:%M:%S%.3f %z"));
+            let _ = writeln!(file, "崩溃时间: {}", current_time.format("%Y-%m-%d %H:%M:%S%.3f"));
             
             // 写入panic信息
             let _ = writeln!(file, "\n崩溃信息:");
@@ -87,9 +88,8 @@ pub fn get_recent_crash_logs(limit: usize) -> Vec<(DateTime<Local>, PathBuf)> {
                     name.to_string_lossy().starts_with("crash_")
                 }) {
                     if let Ok(modified) = metadata.modified() {
-                        // Convert SystemTime to DateTime<Local> via Utc
-                        let datetime_utc: DateTime<Utc> = DateTime::<Utc>::from(modified);
-                        let datetime_local: DateTime<Local> = datetime_utc.with_timezone(&Local);
+                        // 直接转换为本地时间
+                        let datetime_local = DateTime::<Local>::from(modified);
                         crash_logs.push((datetime_local, entry.path()));
                     }
                 }

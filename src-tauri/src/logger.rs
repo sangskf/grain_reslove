@@ -1,20 +1,16 @@
-use chrono::{DateTime, FixedOffset, Local, Utc};
+use chrono::{DateTime, Local, NaiveDateTime, TimeZone};
 use lazy_static::lazy_static;
 use log::{error, info, warn};
 use serde::{Deserialize, Serialize};
 use std::fs::{self, File, OpenOptions};
-use std::io::{self, BufRead, BufReader, Seek, SeekFrom};
+use std::io::{self, BufRead, BufReader};
 use std::path::{Path, PathBuf};
-use std::sync::Once;
 use std::sync::RwLock;
 
 // 初始化一个静态日志目录
 lazy_static! {
     static ref LOG_DIR: RwLock<String> = RwLock::new(String::new());
 }
-
-// 初始化标记，确保日志目录只被创建一次
-static INIT: Once = Once::new();
 
 /// 日志条目结构
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -55,11 +51,10 @@ pub fn get_log_file_path() -> io::Result<PathBuf> {
         return Err(io::Error::new(io::ErrorKind::Other, "无法读取日志目录"));
     };
 
-    // 创建东八区（北京时间）时区
-    let china_timezone = FixedOffset::east_opt(8 * 3600).unwrap_or(FixedOffset::east(8 * 3600));
-    // 获取当前UTC时间并转换为东八区时间
-    let now = Utc::now().with_timezone(&china_timezone);
+    // 使用本地时区获取当前日期
+    let now = Local::now();
     let today = now.format("%Y-%m-%d").to_string();
+    
     // 修正文件名，不要在format中添加.log后缀，因为tauri-plugin-log会自动添加
     let file_name = format!("app_{}.log", today);
     Ok(PathBuf::from(&log_dir).join(file_name))
@@ -93,10 +88,8 @@ pub fn append_to_log(level: &str, message: &str) -> io::Result<()> {
         .append(true)
         .open(log_path)?;
 
-    // 创建东八区（北京时间）时区，偏移量为+8小时
-    let china_timezone = FixedOffset::east_opt(8 * 3600).unwrap_or(FixedOffset::east(8 * 3600));
-    // 获取当前UTC时间并转换为东八区时间
-    let now = Utc::now().with_timezone(&china_timezone);
+    // 使用系统本地时间，而不是UTC+8
+    let now = Local::now();
     let formatted_time = now.format("%Y-%m-%d %H:%M:%S%.3f").to_string();
 
     let log_line = format!("{} [{}] {}\n", formatted_time, level, message);
@@ -143,22 +136,20 @@ pub fn read_logs(level_filter: Option<String>, limit: Option<usize>) -> io::Resu
         }
     }
 
-    // 创建东八区时区用于解析时间
-    let china_timezone = FixedOffset::east_opt(8 * 3600).unwrap_or(FixedOffset::east(8 * 3600));
-
-    // 按时间倒序排序
+    // 按时间倒序排序，使用本地时区解析时间
     entries.sort_by(|a, b| {
-        // 尝试解析时间为带有东八区时区的DateTime
-        let parse_time = |time_str: &str| -> DateTime<FixedOffset> {
-            match DateTime::parse_from_str(
-                &format!("{} +0800", time_str),
-                "%Y-%m-%d %H:%M:%S%.3f %z",
-            ) {
-                Ok(dt) => dt,
-                Err(_) => {
-                    // 如果解析失败，使用默认时间
-                    Utc::now().with_timezone(&china_timezone)
-                }
+        // 解析时间字符串为本地时间
+        let parse_time = |time_str: &str| -> DateTime<Local> {
+            // 尝试解析为没有时区的日期时间
+            match NaiveDateTime::parse_from_str(time_str, "%Y-%m-%d %H:%M:%S%.3f") {
+                Ok(dt) => {
+                    // 将NaiveDateTime转换为当地时区
+                    match Local.from_local_datetime(&dt).single() {
+                        Some(local_dt) => local_dt,
+                        None => Local::now()
+                    }
+                },
+                Err(_) => Local::now()
             }
         };
 

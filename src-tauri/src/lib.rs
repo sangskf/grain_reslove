@@ -10,7 +10,7 @@ mod crash_logger;
 // 使用commands模块中的命令
 use commands::{send_hex_data, get_logs, add_log, clear_logs};
 use tauri_plugin_log::{Target, TargetKind};
-use chrono::{Local, FixedOffset, Utc};
+use chrono::Local;
 use log::{info, LevelFilter};
 use std::path::PathBuf;
 use std::fs;
@@ -23,7 +23,7 @@ use dirs;
 fn open_log_directory() -> Result<String, String> {
     let app_data_dir = dirs::data_local_dir()
         .unwrap_or_else(|| env::temp_dir())
-        .join("grain_reslove");
+        .join("GrainResolve");
     
     let log_dir = app_data_dir.join("logs");
     
@@ -50,7 +50,7 @@ pub fn run() {
     // 获取应用数据目录
     let app_data_dir = dirs::data_local_dir()
         .unwrap_or_else(|| env::temp_dir())
-        .join("grain_reslove");
+        .join("GrainResolve");
     
     let log_dir = app_data_dir.join("logs");
     
@@ -59,7 +59,7 @@ pub fn run() {
         if let Err(e) = std::fs::create_dir_all(&log_dir) {
             eprintln!("创建日志目录失败: {}", e);
             // 如果创建失败，尝试使用临时目录
-            let temp_log_dir = env::temp_dir().join("grain_reslove").join("logs");
+            let temp_log_dir = env::temp_dir().join("GrainResolve").join("logs");
             if let Err(e) = std::fs::create_dir_all(&temp_log_dir) {
                 eprintln!("创建临时日志目录也失败: {}", e);
             } else {
@@ -69,10 +69,8 @@ pub fn run() {
         }
     }
 
-    // 创建东八区（北京时间）时区
-    let china_timezone = FixedOffset::east_opt(8 * 3600).unwrap_or(FixedOffset::east(8 * 3600));
-    // 获取当前时间并转换为东八区时间
-    let now = Utc::now().with_timezone(&china_timezone);
+    // 使用本地时区获取当前时间
+    let now = Local::now();
     // 生成日志文件名，按日期命名
     let today = now.format("%Y-%m-%d").to_string();
     // 修正文件名，tauri-plugin-log 会自动添加 .log 后缀
@@ -90,7 +88,7 @@ pub fn run() {
             .targets([
                 Target::new(TargetKind::Stdout),
                 Target::new(TargetKind::LogDir { 
-                    file_name: Some(log_file_path.to_string_lossy().to_string()) 
+                    file_name: Some(log_file_path.to_string_lossy().to_string())
                 }),
                 Target::new(TargetKind::Webview),
             ])
