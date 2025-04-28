@@ -3,12 +3,10 @@
     <h3>温度数据解析结果:</h3>
     
     <div class="temperature-grid">
-      <div v-for="(chunk, chunkIndex) in temperatureChunks" :key="'chunk-'+chunkIndex" class="grid-row">
-        <div v-for="(item, itemIndex) in chunk" :key="'item-'+itemIndex" class="grid-cell">
-          <div class="sensor-id">传感器 #{{ item.sensorId }}</div>
-          <div class="temperature-value" :class="getTemperatureClass(item.temperature)">
-            {{ item.temperature.toFixed(1) }} ℃
-          </div>
+      <div v-for="(item, index) in temperatures" :key="index" class="grid-cell">
+        <div class="sensor-id">传感器 #{{ item.sensorId }}</div>
+        <div class="temperature-value" :class="getTemperatureClass(item.temperature)">
+          {{ item.temperature.toFixed(1) }} ℃
         </div>
       </div>
     </div>
@@ -33,18 +31,6 @@ export default {
     }
   },
   computed: {
-    // 将温度数据按每行5个分组
-    temperatureChunks() {
-      const chunks = [];
-      const itemsPerRow = 4;
-      
-      for (let i = 0; i < this.temperatures.length; i += itemsPerRow) {
-        chunks.push(this.temperatures.slice(i, i + itemsPerRow));
-      }
-      
-      return chunks;
-    },
-    
     // 计算最高温度
     maxTemp() {
       if (this.temperatures.length === 0) return 0;
@@ -92,19 +78,12 @@ h3 {
 }
 
 .temperature-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.grid-row {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 10px;
 }
 
 .grid-cell {
-  flex: 1;
   min-width: 120px;
   background-color: var(--bg-color, white);
   border-radius: 4px;
