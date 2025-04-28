@@ -3,11 +3,18 @@
     <h2>关于应用</h2>
     
     <div class="about-section version-section">
-      <div class="version-info">
-        <div class="app-logo">🌾</div>
-        <div class="version-details">
-          <h3>粮情数据解析工具</h3>
-          <div class="version-number">V{{ appVersion }}</div>
+      <div class="version-layout">
+        <div class="version-info">
+          <div class="app-logo">🌾</div>
+          <div class="version-details">
+            <h3>粮情数据解析工具</h3>
+            <div class="version-meta">
+              <div class="version-number">V{{ appVersion }}</div>
+              <div class="version-updater">
+                <AppUpdater />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -150,9 +157,13 @@
 <script>
 import { ref, onMounted } from 'vue';
 import { getVersion } from '@tauri-apps/api/app';
+import AppUpdater from '../components/AppUpdater.vue';
 
 export default {
   name: 'AboutPage',
+  components: {
+    AppUpdater
+  },
   
   setup() {
     const appVersion = ref('0.0.0');
@@ -212,33 +223,97 @@ h3 {
 .version-section {
   background-color: var(--active-color, #4CAF50);
   color: var(--active-text, white);
+  position: relative;
+  padding: 20px;
 }
 
-.version-section h3 {
-  color: var(--active-text, white);
-  border-bottom-color: rgba(255, 255, 255, 0.2);
+.version-layout {
+  display: flex;
 }
 
 .version-info {
   display: flex;
-  align-items: center;
+  width: 100%;
 }
 
 .app-logo {
-  font-size: 3rem;
-  margin-right: 20px;
+  font-size: 2.5rem;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
 }
 
 .version-details {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+}
+
+.version-details h3 {
+  margin: 0 0 10px 0;
+  padding: 0;
+  border: none;
+  font-size: 1.4rem;
+  color: white;
+}
+
+.version-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .version-number {
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   font-weight: bold;
-  margin-top: 5px;
   color: #fff;
+}
+
+/* 为版本区域中的更新器组件添加自定义样式 */
+.version-section :deep(.updater-container) {
+  margin: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.version-section :deep(.version-display) {
+  display: none; /* 隐藏重复的版本号显示 */
+}
+
+.version-section :deep(.check-updates-btn) {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 4px 10px;
+  font-size: 12px;
+  min-width: 0;
+}
+
+.version-section :deep(.check-updates-btn:hover) {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.version-section :deep(.update-message) {
+  color: white;
+  background-color: rgba(0, 0, 0, 0.1);
+  max-width: 200px;
+  font-size: 12px;
+  padding: 6px;
+  text-align: right;
+}
+
+.version-section :deep(.progress-bar-container) {
+  max-width: 150px;
+  height: 15px;
+  margin-top: 5px;
+}
+
+.version-section :deep(.update-message.info),
+.version-section :deep(.update-message.success),
+.version-section :deep(.update-message.error) {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: white;
 }
 
 .feature-list {
