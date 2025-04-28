@@ -75,7 +75,8 @@ pub fn run() {
     let now = Utc::now().with_timezone(&china_timezone);
     // 生成日志文件名，按日期命名
     let today = now.format("%Y-%m-%d").to_string();
-    let log_file_name = format!("app_{}.log", today);
+    // 修正文件名，tauri-plugin-log 会自动添加 .log 后缀
+    let log_file_name = format!("app_{}", today);
     let log_file_path = log_dir.join(log_file_name);
     
     // 记录日志文件路径到全局变量，供logger模块使用

@@ -60,6 +60,7 @@ pub fn get_log_file_path() -> io::Result<PathBuf> {
     // 获取当前UTC时间并转换为东八区时间
     let now = Utc::now().with_timezone(&china_timezone);
     let today = now.format("%Y-%m-%d").to_string();
+    // 修正文件名，不要在format中添加.log后缀，因为tauri-plugin-log会自动添加
     let file_name = format!("app_{}.log", today);
     Ok(PathBuf::from(&log_dir).join(file_name))
 }

@@ -5,13 +5,23 @@ use chrono::{DateTime, Local, Utc};
 use std::backtrace::Backtrace;
 use std::panic;
 use log::error;
+use crate::logger;
 
-/// 获取崩溃日志目录
+/// 获取崩溃日志目录 - 使用与普通日志相同的目录
 pub fn get_crash_log_dir() -> PathBuf {
+    // 尝试获取普通日志目录
+    if let Ok(log_path) = logger::get_log_file_path() {
+        if let Some(parent) = log_path.parent() {
+            return parent.to_path_buf();
+        }
+    }
+    
+    // 如果无法获取普通日志目录，则使用默认路径
     let base_dir = dirs::data_local_dir()
         .unwrap_or_else(|| std::env::temp_dir())
-        .join("grain_reslove");
-    base_dir.join("crash_logs")
+        .join("grain_reslove")
+        .join("logs");
+    base_dir
 }
 
 /// 初始化崩溃日志处理
@@ -73,7 +83,9 @@ pub fn get_recent_crash_logs(limit: usize) -> Vec<(DateTime<Local>, PathBuf)> {
     if let Ok(entries) = fs::read_dir(crash_dir) {
         for entry in entries.flatten() {
             if let Ok(metadata) = entry.metadata() {
-                if metadata.is_file() {
+                if metadata.is_file() && entry.path().file_name().map_or(false, |name| {
+                    name.to_string_lossy().starts_with("crash_")
+                }) {
                     if let Ok(modified) = metadata.modified() {
                         // Convert SystemTime to DateTime<Local> via Utc
                         let datetime_utc: DateTime<Utc> = DateTime::<Utc>::from(modified);
