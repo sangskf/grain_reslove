@@ -108,8 +108,9 @@ pub fn add_log(level: &str, message: &str) -> Result<(), String> {
     );
 
     // 记录消息摘要（只显示前50个字符，避免日志过长）
-    let message_preview = if message.len() > 50 {
-        format!("{}...(共{}字符)", &message[0..50], message.len())
+    let message_preview = if message.chars().count() > 50 {
+        let preview: String = message.chars().take(50).collect();
+        format!("{}...(共{}字符)", preview, message.chars().count())
     } else {
         message.to_string()
     };
