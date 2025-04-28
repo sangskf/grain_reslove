@@ -14,14 +14,18 @@
       </div>
       
       <div class="log-actions">
-        <button class="refresh-btn" @click="fetchLogs">刷新</button>
-        <button class="clear-btn" @click="clearLogs">清空</button>
         <div class="auto-refresh">
           <label>
             <input type="checkbox" v-model="autoRefresh">
             自动刷新
           </label>
         </div>
+        <button class="refresh-btn" @click="fetchLogs">刷新</button>
+        <button class="clear-btn" @click="clearLogs">清空</button>
+        <button class="directory-btn" @click="openLogDirectory">
+          <i class="fas fa-folder-open"></i>
+          打开日志目录
+        </button>
       </div>
     </div>
     
@@ -44,6 +48,8 @@
 <script>
 import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { getLogs, clearLogs } from '../utils/logger';
+import { invoke } from '@tauri-apps/api/core';
+import { confirm, message } from '@tauri-apps/plugin-dialog';
 
 export default {
   name: 'LogViewer',
@@ -73,7 +79,12 @@ export default {
     
     // 清空日志
     const clearLogsHandler = async () => {
-      if (!confirm('确定要清空所有日志记录吗？')) {
+      const confirmed = await confirm('确定要清空所有日志记录吗？', {
+        title: '确认操作',
+        type: 'warning'
+      });
+      
+      if (!confirmed) {
         return;
       }
       
@@ -83,6 +94,21 @@ export default {
       } catch (err) {
         console.error('清空日志失败:', err);
         error.value = err.toString();
+      }
+    };
+
+    // 打开日志目录
+    const openLogDirectory = async () => {
+      try {
+        const logDirPath = await invoke('open_log_directory');
+        console.log('日志目录已打开:', logDirPath);
+      } catch (err) {
+        console.error('打开日志目录失败:', err);
+        error.value = err.toString();
+        await message(`打开日志目录失败: ${err}`, { 
+          title: '操作失败', 
+          type: 'error' 
+        });
       }
     };
     
@@ -135,7 +161,8 @@ export default {
       autoRefresh,
       fetchLogs,
       clearLogs: clearLogsHandler,
-      getLevelText
+      getLevelText,
+      openLogDirectory
     };
   }
 };
@@ -225,6 +252,24 @@ button {
 }
 
 .clear-btn:hover {
+  background-color: var(--sidebar-hover, #e0e0e0);
+  opacity: 0.9;
+}
+
+.directory-btn {
+  background-color: var(--sidebar-hover, #f0f0f0);
+  color: var(--text-color, #333);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.85rem;
+}
+
+.directory-btn i {
+  font-size: 0.9rem;
+}
+
+.directory-btn:hover {
   background-color: var(--sidebar-hover, #e0e0e0);
   opacity: 0.9;
 }
