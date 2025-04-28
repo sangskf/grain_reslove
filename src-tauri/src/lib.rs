@@ -92,6 +92,7 @@ pub fn run() {
                 }),
                 Target::new(TargetKind::Webview),
             ])
+            .timezone_strategy(tauri_plugin_log::TimezoneStrategy::UseLocal)
             .level(LevelFilter::Info)
             .build())
         .plugin(tauri_plugin_process::init())
