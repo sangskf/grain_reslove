@@ -17,6 +17,19 @@ export const SAMPLE_SEND_DATA = 'AA A0 18 08 23 16 55 36 00 01 A0 01 FF FF FF FF
  * @property {string} defaultSendData - 默认的发送数据。
  * @property {string} sampleResponseData - 示例响应数据。
  */
+// 温度颜色配置
+export const DEFAULT_TEMPERATURE_CONFIG = {
+    // 温度区间和对应的颜色配置
+    ranges: [
+        { min: -Infinity, max: 12, color: '#008000', textColor: '#FFFFFF', name: '低温' },
+        { min: 12, max: 16, color: '#FFD700', textColor: '#000000', name: '正常' },
+        { min: 16, max: 30, color: '#8B4513', textColor: '#FFFFFF', name: '偏高' },
+        { min: 30, max: Infinity, color: '#FF0000', textColor: '#FFFFFF', name: '高温' }
+    ],
+    // 故障或无效数据的颜色
+    invalid: { color: '#CFCFCF', textColor: '#000000', name: '故障' }
+};
+
 export const DEFAULT_CONFIG = {
     defaultIp: '127.0.0.1',
     defaultPort: 2000,
@@ -26,7 +39,9 @@ export const DEFAULT_CONFIG = {
     defaultRows: 8,
     defaultColumns: 8,
     defaultSendData: SAMPLE_SEND_DATA,
-    sampleResponseData: SAMPLE_RESPONSE_DATA
+    sampleResponseData: SAMPLE_RESPONSE_DATA,
+    // 添加温度颜色配置
+    temperatureConfig: DEFAULT_TEMPERATURE_CONFIG
 }
 
 

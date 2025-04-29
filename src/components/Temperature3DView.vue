@@ -107,6 +107,11 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
+import { DEFAULT_CONFIG } from '../utils/dataSample';
+import { useConfigStore } from '../stores/config';
+
+// 获取配置store
+const configStore = useConfigStore();
 
 // define props
 const props = defineProps({
@@ -114,24 +119,11 @@ const props = defineProps({
   layers: { type: Number, required: false, default: 8 },
   rows: { type: Number, required: false, default: 8 },
   columns: { type: Number, required: false, default: 8 },
-  darkMode: { type: Boolean, required: false, default: false }
+  darkMode: { type: Boolean, required: false, default: false },
+  config: { type: Object, default: () => DEFAULT_CONFIG }
 })
 
 // reactive state
-const colors = [
-  'rgba(0, 150, 0, 1)',    // 绿色 - 12以下
-  'rgba(255, 215, 0, 1)',  // 黄色 - 12-16
-  'rgba(165, 42, 42, 1)',  // 棕色 - 16-30
-  'rgba(255, 0, 0, 1)',    // 红色 - 30以上
-  'rgba(207, 207, 207, 1)' // 默认/故障
-]
-const darkModeColors = [
-  'rgba(0, 150, 0, 1)',    // 绿色 - 12以下
-  'rgba(255, 215, 0, 1)',  // 黄色 - 12-16
-  'rgba(165, 42, 42, 1)',  // 棕色 - 16-30
-  'rgba(255, 0, 0, 1)',    // 红色 - 30以上
-  'rgba(150, 150, 150, 1)' // 默认/故障
-]
 const countInfo = ref({})
 const layerDatas = ref([])
 const storeyInfos = ref([])
@@ -144,33 +136,32 @@ const rowVisibility = ref([])
 
 // utility functions
 function getColor(temp) {
-  // 温度颜色对应:
-  // 12以下: 绿色
-  // 12-16: 黄色
-  // 16-30: 棕色 
-  // 30以上: 红色
-  if (temp >= 30) {
-    return "#ff0000"; // 红色 - 30以上
-  } else if (temp >= 16) {
-    return "#8B4513"; // 棕色 - 16-30
-  } else if (temp >= 12) {
-    return "#FFD700"; // 黄色 - 12-16
-  } else {
-    return "#008000"; // 绿色 - 12以下
+  if (temp === null || temp === undefined || temp === -100) {
+    return props.config.temperatureConfig.invalid.color;
   }
+
+  for (const range of props.config.temperatureConfig.ranges) {
+    if (temp >= range.min && temp < range.max) {
+      return range.color;
+    }
+  }
+
+  return props.config.temperatureConfig.invalid.color;
 }
 
 // Function to get text color for temperatures in the table
 function getTextColorForTemp(temp) {
-  if (temp >= 30) {
-    return "#ff0000"; // 红色 - 30以上
-  } else if (temp >= 16) {
-    return "#8B4513"; // 棕色 - 16-30
-  } else if (temp >= 12) {
-    return "#FFD700"; // 黄色 - 12-16
-  } else {
-    return "#008000"; // 绿色 - 12以下
+  if (temp === null || temp === undefined || temp === -100) {
+    return props.config.temperatureConfig.invalid.textColor;
   }
+
+  for (const range of props.config.temperatureConfig.ranges) {
+    if (temp >= range.min && temp < range.max) {
+      return range.color;
+    }
+  }
+
+  return props.config.temperatureConfig.invalid.textColor;
 }
 
 // keep one decimal place when formatting numbers
@@ -263,7 +254,7 @@ function processTemperatures() {
 
 // Watch for temperature data changes from parent
 watch(
-  () => [props.temperatures, props.layers, props.rows, props.columns, props.darkMode],
+  () => [props.temperatures, props.layers, props.rows, props.columns, props.darkMode, configStore.config],
   () => {
     processTemperatures();
   },

@@ -96,6 +96,82 @@
     </div>
     
     <div class="settings-section">
+      <h3>温度颜色配置</h3>
+      <div class="temperature-settings">
+        <div v-for="(range, index) in config.temperatureConfig.ranges" :key="index" class="temperature-range">
+          <div class="range-header">
+            <input 
+              v-model="range.name" 
+              type="text" 
+              class="range-name"
+              @change="saveConfig"
+            />
+          </div>
+          <div class="range-inputs">
+            <div class="form-group">
+              <label>最小值:</label>
+              <input 
+                v-model.number="range.min" 
+                type="number" 
+                :disabled="index === 0"
+                @change="saveConfig"
+              />
+            </div>
+            <div class="form-group">
+              <label>最大值:</label>
+              <input 
+                v-model.number="range.max" 
+                type="number" 
+                :disabled="index === config.temperatureConfig.ranges.length - 1"
+                @change="saveConfig"
+              />
+            </div>
+            <div class="form-group">
+              <label>背景色:</label>
+              <input 
+                v-model="range.color" 
+                type="color" 
+                @change="saveConfig"
+              />
+            </div>
+            <div class="form-group">
+              <label>文字色:</label>
+              <input 
+                v-model="range.textColor" 
+                type="color" 
+                @change="saveConfig"
+              />
+            </div>
+          </div>
+        </div>
+        
+        <div class="temperature-range invalid-range">
+          <div class="range-header">
+            <span class="range-name">{{ config.temperatureConfig.invalid.name }}</span>
+          </div>
+          <div class="range-inputs">
+            <div class="form-group">
+              <label>背景色:</label>
+              <input 
+                v-model="config.temperatureConfig.invalid.color" 
+                type="color" 
+                @change="saveConfig"
+              />
+            </div>
+            <div class="form-group">
+              <label>文字色:</label>
+              <input 
+                v-model="config.temperatureConfig.invalid.textColor" 
+                type="color" 
+                @change="saveConfig"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="settings-section">
       <h3>样例数据</h3>
       <div class="form-group">
         <label for="defaultSendData">默认发送数据:</label>
@@ -133,6 +209,7 @@ import { ref, onMounted } from 'vue';
 import { createLogger } from '../utils/logger';
 import { confirm, message } from '@tauri-apps/plugin-dialog';
 import { DEFAULT_CONFIG } from '../utils/dataSample';
+import { useConfigStore } from '../stores/config';
 
 // 日志记录器
 const logger = createLogger('系统设置');
@@ -141,47 +218,19 @@ export default {
   name: 'Settings',
   
   setup() {
-    const config = ref({ ...DEFAULT_CONFIG });
+    const configStore = useConfigStore();
+    const config = ref({ ...configStore.config });
     
     // 从localStorage加载配置
     const loadConfig = () => {
-      let savedConfig = null;
       try {
-        savedConfig = localStorage.getItem('appConfig');
-        if (savedConfig) {
-          const parsedConfig = JSON.parse(savedConfig);
-          // 验证解析后的配置
-          if (typeof parsedConfig === 'object' && parsedConfig !== null) {
-            // 确保所有必需的字段都存在，使用默认值填充缺失字段
-            config.value = {
-              ...DEFAULT_CONFIG,
-              ...parsedConfig,
-              // 确保数值类型字段为数字
-              defaultPort: Number(parsedConfig.defaultPort) || DEFAULT_CONFIG.defaultPort,
-              defaultSubDeviceAddr: Number(parsedConfig.defaultSubDeviceAddr) || DEFAULT_CONFIG.defaultSubDeviceAddr,
-              timeout: Number(parsedConfig.timeout) || DEFAULT_CONFIG.timeout,
-              defaultLayers: Number(parsedConfig.defaultLayers) || DEFAULT_CONFIG.defaultLayers,
-              defaultRows: Number(parsedConfig.defaultRows) || DEFAULT_CONFIG.defaultRows,
-              defaultColumns: Number(parsedConfig.defaultColumns) || DEFAULT_CONFIG.defaultColumns,
-            };
-          } else {
-            throw new Error('Invalid config format');
-          }
-          logger.info('成功加载配置');
-        } else {
-          config.value = { ...DEFAULT_CONFIG };
-          logger.info('未找到保存的配置，使用默认配置');
-        }
+        configStore.loadConfig();
+        config.value = { ...configStore.config };
+        logger.info('成功加载配置');
       } catch (e) {
         console.error('加载配置失败:', e);
         logger.error(`加载配置失败: ${e.message}`);
         config.value = { ...DEFAULT_CONFIG };
-        // 清除可能损坏的配置
-        try {
-          localStorage.removeItem('appConfig');
-        } catch (clearError) {
-          console.error('清除损坏的配置失败:', clearError);
-        }
       }
     };
     
@@ -204,7 +253,8 @@ export default {
           configToSave.defaultIp = DEFAULT_CONFIG.defaultIp;
         }
         
-        localStorage.setItem('appConfig', JSON.stringify(configToSave));
+        // 使用configStore保存配置
+        configStore.saveConfig(configToSave);
         logger.info('配置已保存');
       } catch (e) {
         console.error('保存配置失败:', e);
@@ -401,4 +451,65 @@ button.reset-btn i {
 .help-links a:hover {
   text-decoration: underline;
 }
-</style> 
+
+/* 温度颜色配置样式 */
+.temperature-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.temperature-range {
+  background-color: var(--bg-color, white);
+  border: 1px solid var(--sidebar-border, #ddd);
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.range-header {
+  margin-bottom: 10px;
+}
+
+.range-name {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: var(--text-color, inherit);
+  border: none;
+  background: transparent;
+  width: 100%;
+  padding: 5px 0;
+}
+
+.range-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+}
+
+.invalid-range {
+  background-color: var(--sidebar-bg, #f8f8f8);
+}
+
+.invalid-range .range-name {
+  font-style: italic;
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 40px;
+  border: none;
+  border-radius: 4px;
+  padding: 0;
+  cursor: pointer;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 4px;
+}
+</style>

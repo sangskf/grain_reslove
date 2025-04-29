@@ -5,7 +5,7 @@
     <div class="temperature-grid">
       <div v-for="(item, index) in temperatures" :key="index" class="grid-cell">
         <div class="sensor-id">传感器 #{{ item.sensorId }}</div>
-        <div class="temperature-value" :class="getTemperatureClass(item.temperature)">
+        <div class="temperature-value" :style="getTemperatureStyle(item.temperature)">
           {{ item.temperature.toFixed(1) }} ℃
         </div>
       </div>
@@ -22,12 +22,23 @@
 </template>
 
 <script>
+import { DEFAULT_CONFIG } from '../utils/dataSample';
+import { useConfigStore } from '../stores/config';
+
 export default {
   name: 'TemperatureTable',
+  setup() {
+    const configStore = useConfigStore();
+    return { configStore };
+  },
   props: {
     temperatures: {
       type: Array,
       required: true
+    },
+    config: {
+      type: Object,
+      default: () => DEFAULT_CONFIG
     }
   },
   computed: {
@@ -51,17 +62,29 @@ export default {
     }
   },
   methods: {
-    // 根据温度值获取样式类
-    getTemperatureClass(temp) {
-      if (temp >= 30) {
-        return 'very-high-temp';
-      } else if (temp >= 16) {
-        return 'high-temp';
-      } else if (temp >= 12) {
-        return 'medium-temp';
-      } else {
-        return 'low-temp';
+    // 根据温度值获取样式
+    getTemperatureStyle(temp) {
+      if (temp === null || temp === undefined || temp === -100) {
+        const invalid = this.config.temperatureConfig.invalid;
+        return {
+          backgroundColor: invalid.color,
+          color: invalid.textColor
+        };
       }
+
+      for (const range of this.config.temperatureConfig.ranges) {
+        if (temp >= range.min && temp < range.max) {
+          return {
+            backgroundColor: range.color,
+            color: range.textColor
+          };
+        }
+      }
+
+      return {
+        backgroundColor: this.config.temperatureConfig.invalid.color,
+        color: this.config.temperatureConfig.invalid.textColor
+      };
     }
   }
 };
@@ -116,24 +139,10 @@ h3 {
 }
 
 /* 温度级别颜色 */
-.temperature-grid .very-high-temp {
-  background-color: #ff0000;
-  color: white;
-}
-
-.temperature-grid .high-temp {
-  background-color: #8B4513;
-  color: white;
-}
-
-.temperature-grid .medium-temp {
-  background-color: #FFD700;
-  color: black;
-}
-
-.temperature-grid .low-temp {
-  background-color: #008000;
-  color: white;
+.temperature-value {
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
 .temperature-stats {
@@ -153,4 +162,4 @@ h3 {
 .temp-low {
   color: var(--temp-low-text, #008000);
 }
-</style> 
+</style>

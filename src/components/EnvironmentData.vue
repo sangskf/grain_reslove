@@ -7,7 +7,7 @@
         <div class="env-values">
           <div class="temp-value" v-if="envData.indoorTemp !== null">
             <span class="label">温度:</span>
-            <span class="value" :class="getTemperatureClass(envData.indoorTemp)">
+            <span class="value" :style="getTemperatureStyle(envData.indoorTemp)">
               {{ envData.indoorTemp }}℃
             </span>
           </div>
@@ -24,7 +24,7 @@
         <div class="env-values">
           <div class="temp-value" v-if="envData.outdoorTemp !== null">
             <span class="label">温度:</span>
-            <span class="value" :class="getTemperatureClass(envData.outdoorTemp)">
+            <span class="value" :style="getTemperatureStyle(envData.outdoorTemp)">
               {{ envData.outdoorTemp }}℃
             </span>
           </div>
@@ -40,8 +40,15 @@
 </template>
 
 <script>
+import { DEFAULT_CONFIG } from '../utils/dataSample';
+import { useConfigStore } from '../stores/config';
+
 export default {
   name: 'EnvironmentData',
+  setup() {
+    const configStore = useConfigStore();
+    return { configStore };
+  },
   props: {
     envData: {
       type: Object,
@@ -52,6 +59,10 @@ export default {
         outdoorTemp: null,
         outdoorHumidity: null
       })
+    },
+    config: {
+      type: Object,
+      default: () => DEFAULT_CONFIG
     }
   },
   computed: {
@@ -66,12 +77,28 @@ export default {
     }
   },
   methods: {
-    getTemperatureClass(temp) {
-      if (temp > 35) return 'temp-very-high';
-      if (temp > 25) return 'temp-high';
-      if (temp < 0) return 'temp-very-low';
-      if (temp < 10) return 'temp-low';
-      return 'temp-normal';
+    getTemperatureStyle(temp) {
+      if (temp === null || temp === undefined || temp === -100) {
+        const invalid = this.config.temperatureConfig.invalid;
+        return {
+          backgroundColor: invalid.color,
+          color: invalid.textColor
+        };
+      }
+
+      for (const range of this.config.temperatureConfig.ranges) {
+        if (temp >= range.min && temp < range.max) {
+          return {
+            backgroundColor: range.color,
+            color: range.textColor
+          };
+        }
+      }
+
+      return {
+        backgroundColor: this.config.temperatureConfig.invalid.color,
+        color: this.config.temperatureConfig.invalid.textColor
+      };
     }
   }
 };
@@ -143,29 +170,11 @@ h3 {
   border-radius: 3px;
 }
 
-.temp-very-high {
-  background-color: var(--temp-very-high-bg, #ffcccc);
-  color: var(--temp-very-high-text, #cc0000);
-}
-
-.temp-high {
-  background-color: var(--temp-high-bg, #fff0cc);
-  color: var(--temp-high-text, #cc6600);
-}
-
-.temp-normal {
-  background-color: var(--temp-normal-bg, #e8f5e9);
-  color: var(--temp-normal-text, #2e7d32);
-}
-
-.temp-low {
-  background-color: var(--temp-low-bg, #e3f2fd);
-  color: var(--temp-low-text, #0d47a1);
-}
-
-.temp-very-low {
-  background-color: var(--temp-very-low-bg, #e0f7fa);
-  color: var(--temp-very-low-text, #006064);
+.value {
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 3px;
+  transition: all 0.3s ease;
 }
 
 .no-data {
@@ -180,4 +189,4 @@ h3 {
     flex-direction: column;
   }
 }
-</style> 
+</style>
