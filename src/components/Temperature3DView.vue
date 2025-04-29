@@ -25,15 +25,15 @@
           <div class="cell1">第{{item.ch}}层</div>
           <div class="cell cell2">
             <div class="desc">最高温</div>
-            <div class="num">{{rounding(item.zgw)}}</div>
+            <div class="num" :style="{ color: getTextColorForTemp(item.zgw) }">{{rounding(item.zgw)}}</div>
           </div>
           <div class="cell cell3">
             <div class="desc">最低温</div>
-            <div class="num">{{rounding(item.zdw)}}</div>
+            <div class="num" :style="{ color: getTextColorForTemp(item.zdw) }">{{rounding(item.zdw)}}</div>
           </div>
           <div class="cell cell4">
             <div class="desc">平均温</div>
-            <div class="num">{{rounding(item.pjw)}}</div>
+            <div class="num" :style="{ color: getTextColorForTemp(item.pjw) }">{{rounding(item.pjw)}}</div>
           </div>
         </div>
       </div>
@@ -119,20 +119,18 @@ const props = defineProps({
 
 // reactive state
 const colors = [
-  'RGBA(70, 147, 207, 1)',
-  'RGBA(93, 207, 70, 1)',
-  'RGBA(207, 187, 70, 1)',
-  'RGBA(207, 123, 70, 1)',
-  'RGBA(207, 70, 70, 1)',
-  'RGBA(207, 207, 207, 1)'
+  'rgba(0, 150, 0, 1)',    // 绿色 - 12以下
+  'rgba(255, 215, 0, 1)',  // 黄色 - 12-16
+  'rgba(165, 42, 42, 1)',  // 棕色 - 16-30
+  'rgba(255, 0, 0, 1)',    // 红色 - 30以上
+  'rgba(207, 207, 207, 1)' // 默认/故障
 ]
 const darkModeColors = [
-  'RGBA(70, 147, 207, 1)',
-  'RGBA(93, 207, 70, 1)',
-  'RGBA(207, 187, 70, 1)',
-  'RGBA(207, 123, 70, 1)',
-  'RGBA(207, 70, 70, 1)',
-  'RGBA(150, 150, 150, 1)'
+  'rgba(0, 150, 0, 1)',    // 绿色 - 12以下
+  'rgba(255, 215, 0, 1)',  // 黄色 - 12-16
+  'rgba(165, 42, 42, 1)',  // 棕色 - 16-30
+  'rgba(255, 0, 0, 1)',    // 红色 - 30以上
+  'rgba(150, 150, 150, 1)' // 默认/故障
 ]
 const countInfo = ref({})
 const layerDatas = ref([])
@@ -145,14 +143,34 @@ const colVisibility = ref([])
 const rowVisibility = ref([])
 
 // utility functions
-function getColor(num) {
-  const colorSet = props.darkMode ? darkModeColors : colors
-  if (num === -100) return colorSet[5]
-  if (num < 10) return colorSet[0]
-  if (num < 20) return colorSet[1]
-  if (num < 25) return colorSet[2]
-  if (num < 30) return colorSet[3]
-  return colorSet[4]
+function getColor(temp) {
+  // 温度颜色对应:
+  // 12以下: 绿色
+  // 12-16: 黄色
+  // 16-30: 棕色 
+  // 30以上: 红色
+  if (temp >= 30) {
+    return "#ff0000"; // 红色 - 30以上
+  } else if (temp >= 16) {
+    return "#8B4513"; // 棕色 - 16-30
+  } else if (temp >= 12) {
+    return "#FFD700"; // 黄色 - 12-16
+  } else {
+    return "#008000"; // 绿色 - 12以下
+  }
+}
+
+// Function to get text color for temperatures in the table
+function getTextColorForTemp(temp) {
+  if (temp >= 30) {
+    return "#ff0000"; // 红色 - 30以上
+  } else if (temp >= 16) {
+    return "#8B4513"; // 棕色 - 16-30
+  } else if (temp >= 12) {
+    return "#FFD700"; // 黄色 - 12-16
+  } else {
+    return "#008000"; // 绿色 - 12以下
+  }
 }
 
 // keep one decimal place when formatting numbers
@@ -324,7 +342,7 @@ onMounted(() => {
   line-height: 29px;
   text-align: center;
   display: flex;
-  //text-shadow: 0 0 8px rgba(93, 241, 255, 0.7);
+  /* text-shadow: 0 0 8px rgba(93, 241, 255, 0.7); */
 }
 .container-bottom .table .total .block {
   flex: 1;
@@ -396,7 +414,9 @@ onMounted(() => {
   text-align: center;
   font-size: 18px;
   margin-top: 5px;
-  //text-shadow: 0 0 8px rgba(93, 241, 255, 0.7);
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  /* text-shadow: 0 0 8px rgba(93, 241, 255, 0.7); */
 }
 /* Layer container */
 .layer-con {
@@ -408,7 +428,7 @@ onMounted(() => {
   background: var(--card-bg);
   border-radius: 20px;
   position: relative;
-  //padding: 60px 40px 40px 100px;
+  /* padding: 60px 40px 40px 100px; */
   padding: 0px 0px 0px 20px;
   margin: 30px;
   box-shadow: 0 10px 20px var(--shadow-color), inset 0 0 10px rgba(93, 241, 255, 0.2);
@@ -441,8 +461,8 @@ onMounted(() => {
   justify-content: flex-end;
   padding: 8px 12px;
   background: transparent;
-  //border-radius: 8px;
-  //box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  /* border-radius: 8px; */
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); */
 }
 .layer-con .layers .left-checkboxes .left-checkbox-item:hover {
   transform: translateX(-5px);
@@ -454,7 +474,7 @@ onMounted(() => {
   font-family: 'Microsoft YaHei', sans-serif;
   font-size: 16px;
   font-weight: bold;
-  //text-shadow: 0 0 6px rgba(93, 241, 255, 0.8);
+  /* text-shadow: 0 0 6px rgba(93, 241, 255, 0.8); */
   white-space: nowrap;
 }
 /* Custom checkbox styling */
@@ -540,8 +560,8 @@ onMounted(() => {
   z-index: 5;
 }
 .layer .row .col .col-bg {
-  //padding: 2px 2px;
-  //margin: 2px;
+  /* padding: 2px 2px; */
+  /* margin: 2px; */
   border-radius: 4px;
   transition: box-shadow 0.2s ease;
 }

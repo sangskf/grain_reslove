@@ -53,11 +53,15 @@ export default {
   methods: {
     // 根据温度值获取样式类
     getTemperatureClass(temp) {
-      if (temp > 35) return 'temp-very-high';
-      if (temp > 25) return 'temp-high';
-      if (temp < 0) return 'temp-very-low';
-      if (temp < 10) return 'temp-low';
-      return 'temp-normal';
+      if (temp >= 30) {
+        return 'very-high-temp';
+      } else if (temp >= 16) {
+        return 'high-temp';
+      } else if (temp >= 12) {
+        return 'medium-temp';
+      } else {
+        return 'low-temp';
+      }
     }
   }
 };
@@ -111,30 +115,25 @@ h3 {
   border-radius: 3px;
 }
 
-/* 暗黑模式下的温度级别颜色 */
-.temp-very-high {
-  background-color: var(--temp-very-high-bg, #ffcccc);
-  color: var(--temp-very-high-text, #cc0000);
+/* 温度级别颜色 */
+.temperature-grid .very-high-temp {
+  background-color: #ff0000;
+  color: white;
 }
 
-.temp-high {
-  background-color: var(--temp-high-bg, #fff0cc);
-  color: var(--temp-high-text, #cc6600);
+.temperature-grid .high-temp {
+  background-color: #8B4513;
+  color: white;
 }
 
-.temp-normal {
-  background-color: var(--temp-normal-bg, #e8f5e9);
-  color: var(--temp-normal-text, #2e7d32);
+.temperature-grid .medium-temp {
+  background-color: #FFD700;
+  color: black;
 }
 
-.temp-low {
-  background-color: var(--temp-low-bg, #e3f2fd);
-  color: var(--temp-low-text, #0d47a1);
-}
-
-.temp-very-low {
-  background-color: var(--temp-very-low-bg, #e0f7fa);
-  color: var(--temp-very-low-text, #006064);
+.temperature-grid .low-temp {
+  background-color: #008000;
+  color: white;
 }
 
 .temperature-stats {
@@ -148,10 +147,10 @@ h3 {
 }
 
 .temp-high {
-  color: var(--temp-high-text, #cc6600);
+  color: var(--temp-high-text, #8B4513);
 }
 
 .temp-low {
-  color: var(--temp-low-text, #0d47a1);
+  color: var(--temp-low-text, #008000);
 }
 </style> 
