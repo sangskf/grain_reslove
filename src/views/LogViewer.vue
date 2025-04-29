@@ -144,7 +144,7 @@ export default {
     const formatTime = (timeStr) => {
       // 处理Tauri格式: [2025-04-29][19:33:31]
       if (timeStr.startsWith('[')) {
-        const parts = timeStr.match(/\[(\d{4}-\d{2}-\d{2})\]\[(\d{2}:\d{2}:\d{2})\]/);
+        const parts = timeStr.match(/\[(\d{4}-\d{2}-\d{2})\]\[(\d{2}:\d{2}:\d{2}(?:\.\d+)?)\]/);
         if (parts) {
           return `${parts[1]} ${parts[2]}`;
         }

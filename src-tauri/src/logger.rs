@@ -90,9 +90,12 @@ pub fn append_to_log(level: &str, message: &str) -> io::Result<()> {
 
     // 使用系统本地时间，而不是UTC+8
     let now = Local::now();
-    let formatted_time = now.format("%Y-%m-%d %H:%M:%S%.3f").to_string();
-
-    let log_line = format!("{} [{}] {}\n", formatted_time, level, message);
+    let date_str = now.format("%Y-%m-%d").to_string();
+    let time_str = now.format("%H:%M:%S%.3f").to_string();
+    
+    // 使用带括号的格式，与Tauri内置日志一致
+    let log_line = format!("[{}][{}][{}][grain_reslove_lib::commands] {}\n", 
+                         date_str, time_str, level, message);
 
     use std::io::Write;
     let mut writer = io::BufWriter::new(file);
@@ -191,8 +194,35 @@ pub fn clear_logs() -> io::Result<()> {
 
 /// 解析日志行
 fn parse_log_line(line: &str) -> Option<LogEntry> {
-    // 从日志行解析时间、级别和消息
-    // 格式: YYYY-MM-DD HH:MM:SS.MMM [LEVEL] Message
+    // 检查是否是新的带括号格式：[YYYY-MM-DD][HH:MM:SS.sss][LEVEL][module] message
+    if line.starts_with('[') {
+        let parts: Vec<&str> = line.splitn(5, ']').collect();
+        if parts.len() >= 4 {
+            // 日期 [YYYY-MM-DD
+            let date = parts[0].trim_start_matches('[');
+            // 时间 [HH:MM:SS.sss
+            let time = parts[1].trim_start_matches('[');
+            // 级别 [LEVEL
+            let level = parts[2].trim_start_matches('[');
+            
+            // 消息内容 (可能包含模块名)
+            let mut message = "";
+            if parts.len() > 4 {
+                message = parts[4].trim_start();
+            } else if !parts[3].is_empty() {
+                // 如果没有模块名，直接取第4部分
+                message = parts[3].trim_start_matches('[').trim();
+            }
+            
+            return Some(LogEntry {
+                time: format!("[{}][{}]", date, time),
+                level: level.to_string(),
+                message: message.to_string(),
+            });
+        }
+    }
+    
+    // 兼容旧格式: YYYY-MM-DD HH:MM:SS.MMM [LEVEL] Message
     let parts: Vec<&str> = line.splitn(3, ' ').collect();
     if parts.len() < 3 {
         return None;
@@ -200,8 +230,7 @@ fn parse_log_line(line: &str) -> Option<LogEntry> {
 
     let date = parts[0];
     let time_part = parts[1];
-    let time = format!("{} {}", date, time_part);
-
+    
     let rest = parts[2];
     if let Some(level_start) = rest.find('[') {
         if let Some(level_end) = rest.find(']') {
@@ -209,7 +238,7 @@ fn parse_log_line(line: &str) -> Option<LogEntry> {
             let message = rest[level_end + 2..].to_string();
 
             return Some(LogEntry {
-                time,
+                time: format!("[{}][{}]", date, time_part),
                 level: level.to_string(),
                 message,
             });
