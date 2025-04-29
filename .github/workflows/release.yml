@@ -13,18 +13,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: 'macos-latest'
-            target: 'aarch64-apple-darwin'
-            args: '--target aarch64-apple-darwin'
-          - platform: 'macos-latest'
-            target: 'x86_64-apple-darwin'
-            args: '--target x86_64-apple-darwin'
-          - platform: 'ubuntu-22.04'
-            target: 'x86_64-unknown-linux-gnu'
-            args: ''
-          - platform: 'ubuntu-22.04'
-            target: 'aarch64-unknown-linux-gnu'
-            args: ''
+#          - platform: 'macos-latest'
+#            target: 'aarch64-apple-darwin'
+#            args: '--target aarch64-apple-darwin'
+#          - platform: 'macos-latest'
+#            target: 'x86_64-apple-darwin'
+#            args: '--target x86_64-apple-darwin'
+#          - platform: 'ubuntu-22.04'
+#            target: 'x86_64-unknown-linux-gnu'
+#            args: ''
+#          - platform: 'ubuntu-22.04'
+#            target: 'aarch64-unknown-linux-gnu'
+#            args: ''
           - platform: 'windows-latest'
             target: 'x86_64-pc-windows-msvc'
             args: ''
@@ -73,13 +73,13 @@ jobs:
         with:
           tagName: ${{ github.ref_name }} # This only works if your workflow triggers on new tags.
           releaseName: 'GrainResolve v__VERSION__' # tauri-action replaces \_\_VERSION\_\_ with the app version.
-          releaseBody: 'See the assets to download and install this version.'
+          releaseBody: '稳定性修复.'
           releaseDraft: false
           prerelease: false
           publish: true
 
-#      - name: Upload assets
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          # artifactPaths: ${{ steps.build.outputs.artifactPaths }}
-#        run: pnpm updater
+      - name: Upload assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # artifactPaths: ${{ steps.build.outputs.artifactPaths }}
+        run: pnpm updater

@@ -1,10 +1,11 @@
 name: Rust
+# 修改分支名称，脚本备用
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master1" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master1" ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -12,7 +13,7 @@ env:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
