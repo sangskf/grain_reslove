@@ -69,6 +69,7 @@ export default {
       try {
         const level = logLevel.value === 'all' ? null : logLevel.value;
         logs.value = await getLogs(level, 200);
+        logs.value.sort((a, b) => new Date(a.time) - new Date(b.time));
       } catch (err) {
         console.error('获取日志失败:', err);
         error.value = err.toString();
@@ -376,4 +377,4 @@ button {
     padding: 0 10px;
   }
 }
-</style> 
+</style>
