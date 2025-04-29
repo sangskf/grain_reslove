@@ -302,14 +302,6 @@ onMounted(() => {
   height: 100%;
   gap: 20px;
 }
-.container-top {
-  font-family: 'Microsoft YaHei', sans-serif;
-  font-weight: bold;
-  font-size: 16px;
-  color: var(--text-color);
-  padding: 20px 0 20px 40px;
-  text-shadow: 0 0 10px rgba(93, 241, 255, 0.5);
-}
 .container-bottom .table {
   flex: 1;
   min-width: 300px;
@@ -323,10 +315,7 @@ onMounted(() => {
   backdrop-filter: blur(5px);
   transition: all 0.3s ease;
 }
-.container-bottom .table:hover {
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25), inset 0 0 20px rgba(93, 241, 255, 0.4);
-  transform: translateY(-5px);
-}
+
 .container-bottom .table .total {
   margin-bottom: 29px;
   font-family: Impact, sans-serif;
@@ -352,7 +341,7 @@ onMounted(() => {
   font-family: 'Microsoft YaHei', sans-serif;
   font-weight: bold;
   font-size: 16px;
-  color: var(--text-color-light);
+  color: var(--text-color);
   line-height: 21px;
   text-align: center;
   margin-top: 5px;
@@ -367,7 +356,7 @@ onMounted(() => {
   font-family: 'Microsoft YaHei', sans-serif;
   font-weight: bold;
   font-size: 16px;
-  color: var(--text-color-light);
+  color: var(--text-color);
   display: flex;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
@@ -427,9 +416,6 @@ onMounted(() => {
   transition: all 0.3s ease;
   will-change: transform, box-shadow;
   overflow: visible;
-}
-.layer-con:hover {
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2), inset 0 0 15px rgba(93, 241, 255, 0.3);
 }
 .layer-con .layers {
   width: 500px;
