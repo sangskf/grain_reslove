@@ -36,7 +36,7 @@
       
       <div v-else class="log-entries">
         <div v-for="(log, index) in logs" :key="index" :class="['log-entry', `log-${log.level.toLowerCase()}`]">
-          <div class="log-time">{{ log.time }}</div>
+          <div class="log-time">{{ formatTime(log.time) }}</div>
           <div class="log-level-badge">{{ getLevelText(log.level) }}</div>
           <div class="log-message">{{ log.message }}</div>
         </div>
@@ -69,7 +69,24 @@ export default {
       try {
         const level = logLevel.value === 'all' ? null : logLevel.value;
         logs.value = await getLogs(level, 200);
-        logs.value.sort((a, b) => new Date(a.time) - new Date(b.time));
+        
+        // Update the sorting to handle both timestamp formats
+        logs.value.sort((a, b) => {
+          // Parse the timestamps into a standard format
+          const parseTime = (timeStr) => {
+            // Handle Tauri's format: [2025-04-29][19:33:31]
+            if (timeStr.startsWith('[')) {
+              const parts = timeStr.match(/\[(\d{4}-\d{2}-\d{2})\]\[(\d{2}:\d{2}:\d{2})\]/);
+              if (parts) {
+                return new Date(`${parts[1]}T${parts[2]}`);
+              }
+            }
+            // Handle regular format: 2025-04-29 19:33:31.939
+            return new Date(timeStr);
+          };
+          
+          return parseTime(a.time) - parseTime(b.time);
+        });
       } catch (err) {
         console.error('获取日志失败:', err);
         error.value = err.toString();
@@ -115,12 +132,25 @@ export default {
     
     // 获取日志级别文本
     const getLevelText = (level) => {
-      switch (level) {
+      switch (level.toUpperCase()) {
         case 'INFO': return '信息';
         case 'WARN': return '警告';
         case 'ERROR': return '错误';
         default: return level;
       }
+    };
+    
+    // 格式化时间戳为统一格式
+    const formatTime = (timeStr) => {
+      // 处理Tauri格式: [2025-04-29][19:33:31]
+      if (timeStr.startsWith('[')) {
+        const parts = timeStr.match(/\[(\d{4}-\d{2}-\d{2})\]\[(\d{2}:\d{2}:\d{2})\]/);
+        if (parts) {
+          return `${parts[1]} ${parts[2]}`;
+        }
+      }
+      // 处理标准格式，如果有毫秒，保留毫秒
+      return timeStr;
     };
     
     // 设置自动刷新
@@ -163,6 +193,7 @@ export default {
       fetchLogs,
       clearLogs: clearLogsHandler,
       getLevelText,
+      formatTime,
       openLogDirectory
     };
   }
