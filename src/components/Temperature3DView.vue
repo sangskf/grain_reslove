@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <div class="container-bottom">
+      <!-- 按层统计   -->
       <div class="table">
         <div class="total">
           <span class="block">
@@ -36,20 +37,22 @@
           </div>
         </div>
       </div>
+      <!-- 行列层数据展示   -->
       <div class="layer-con">
         <div class="layers">
-          <!-- 修改左侧复选框 -->
+          <!-- 左侧复选框 -->
           <div class="left-checkboxes">
             <div
               v-for="(matrix, matrixIndex) in layerArrs"
               :key="`left-checkbox-${matrixIndex}`"
               class="left-checkbox-item"
               :style="{
-                'top': `${130 + (matrixIndex * (300/layerArrs.length)) + (300/(2*layerArrs.length))}px`
+                'top': `${120 + (matrixIndex * (320/layerArrs.length))}px`
               }"
             >
               <span class="layer-text">第{{ matrix }}层</span>
               <input
+                :title="`第${ matrix }层`"
                 type="checkbox"
                 class="custom-checkbox"
                 v-model="layerVisibility[matrixIndex]"
@@ -57,13 +60,13 @@
               />
             </div>
           </div>
-
+          <!-- 右侧行列层展示 -->
           <div
             class="layer"
             v-for="(matrix,index) in layerDatas"
             :key="`layer-${index}`"
             :style="{
-              'top': `${index * (300/layerDatas.length)}px`,
+              'top': `${index * (320/layerDatas.length)}px`,
               'z-index': layerDatas.length - index,
               'opacity': layerVisibility[index] ? 1 : 0,
               '--layer-index': index,
@@ -103,22 +106,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, computed } from 'vue'
-
-// Custom filter in Vue 3
-function formatDate(value) {
-  if (!value) return '';
-  // Format the date as needed (e.g., YYYY-MM-DD HH:MM:SS)
-  if (typeof value === 'string') {
-    return value;
-  }
-  
-  if (value instanceof Date) {
-    return value.toLocaleString();
-  }
-  
-  return value;
-}
+import { ref, watch, onMounted } from 'vue'
 
 // define props
 const props = defineProps({
@@ -368,7 +356,7 @@ onMounted(() => {
   line-height: 21px;
   text-align: center;
   margin-top: 5px;
-  opacity: 0.9;
+  opacity: 1;
 }
 .container-bottom .table .line {
   width: 100%;
@@ -424,14 +412,15 @@ onMounted(() => {
 /* Layer container */
 .layer-con {
   flex: 2;
-  min-width: 300px;
+  min-width: 500px;
   max-width: 900px;
   height: auto;
   min-height: 500px;
   background: var(--card-bg);
   border-radius: 20px;
   position: relative;
-  padding: 60px 40px 40px 100px;
+  //padding: 60px 40px 40px 100px;
+  padding: 0px 0px 0px 20px;
   margin: 30px;
   box-shadow: 0 10px 20px var(--shadow-color), inset 0 0 10px rgba(93, 241, 255, 0.2);
   backdrop-filter: blur(5px);
@@ -452,7 +441,7 @@ onMounted(() => {
 /* Left checkboxes */
 .layer-con .layers .left-checkboxes {
   position: absolute;
-  left: -180px;
+  left: -158px;
   top: 0;
   width: 150px;
   height: 100%;
@@ -530,7 +519,7 @@ onMounted(() => {
   box-shadow: 0 8px 15px var(--shadow-color), 0 0 8px rgba(93, 241, 255, 0.2);
   position: absolute;
   transform: skewX(-45deg);
-  background: rgba(221, 224, 226, 0.9);
+  background: rgba(221, 224, 226, 1);
   width: 500px;
   padding: 10px;
   border-radius: 8px;
@@ -539,7 +528,7 @@ onMounted(() => {
   will-change: transform;
 }
 .dark-mode .layer {
-  background: rgba(60, 60, 70, 0.9);
+  background: rgba(60, 60, 70, 1);
 }
 .layer:hover {
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.25), 0 0 12px rgba(93, 241, 255, 0.3);
@@ -551,7 +540,7 @@ onMounted(() => {
 .layer .row .col {
   color: white;
   flex: 1;
-  background: rgba(221, 224, 226, 0.1);
+  background: rgba(221, 224, 226, 1);
   border-radius: 4px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   margin: 0 2px;
@@ -565,8 +554,8 @@ onMounted(() => {
   z-index: 5;
 }
 .layer .row .col .col-bg {
-  padding: 3px 5px;
-  margin: 2px;
+  //padding: 2px 2px;
+  //margin: 2px;
   border-radius: 4px;
   transition: box-shadow 0.2s ease;
 }
@@ -580,7 +569,7 @@ onMounted(() => {
   transform: skewX(45deg);
   font-weight: bold;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-  font-size: 12px;
+  font-size: 14px;
 }
 .dark-mode .container {
   background: #121212;
